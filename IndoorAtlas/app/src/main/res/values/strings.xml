@@ -1,0 +1,22 @@
+<resources>
+    <string name="app_name">IndoorAtlas</string>
+    <color name="white">#FFFFFF</color>
+
+    <string name="venue_outside">Outside mapped area</string>
+    <string name="venue_inside">In venue</string>
+    <string name="floor_plan_outside">No floor plan</string>
+    <string name="floor_level">Floor level</string>
+    <string name="floor_certainty_percentage">Certainty: %.1f %%</string>
+
+    <string name="storage_permission_denied_message">No access to external storage. Permission needed for displaying floor plans</string>
+    <string name="storage_permission_denied_message_osm">No access to external storage. Permission needed for storing map tiles in the OSMDroid example.</string>
+
+    <string name="region_information">Region information</string>
+
+    <string name="button_ok">OK</string>
+    <string name="button_cancel">Cancel</string>
+    <string name="button_close">Close</string>
+    <string name="permission_button_accept">Sure</string>
+    <string name="permission_button_deny">Deny</string>
+    <string name="title_activity_maps">Map</string>
+</resources>

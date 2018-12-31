@@ -1,0 +1,46 @@
+apply plugin: 'com.android.application'
+
+android {
+    compileSdkVersion 27
+
+    def apiKey = project.properties['indoorAtlasApiKey'] ?: "api-key-not-set";
+    def apiSecret = project.properties['indoorAtlasApiSecret'] ?: "api-secret-not-set";
+
+    defaultConfig {
+        applicationId "com.example.jeyun_worker.indooratlas"
+        minSdkVersion 21
+        targetSdkVersion 27
+        versionCode 1
+        versionName "1.0"
+        testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
+
+        resValue "string", "indooratlas_api_key", apiKey
+        resValue "string", "indooratlas_api_secret", apiSecret.replaceAll("%", "\\\\u0025")
+    }
+    buildTypes {
+        release {
+            minifyEnabled true
+            proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
+        }
+    }
+}
+
+
+dependencies {
+    implementation 'com.android.support.constraint:constraint-layout:1.1.3'
+    compile "com.indooratlas.android:indooratlas-android-sdk:2.9.0-beta-936@aar"
+
+    compile 'com.android.support:appcompat-v7:27.1.1'
+    compile 'com.google.android.gms:play-services-maps:8.1.0'
+    compile 'com.google.maps.android:android-maps-utils:0.3.+'
+    compile 'com.squareup.picasso:picasso:2.5.2'
+    compile 'com.davemorrissey.labs:subsampling-scale-image-view:3.2.0'
+    compile 'com.pubnub:pubnub-android:3.7.5'
+    compile 'com.android.support:design:27.1.1'
+
+    // for Open Street Map support
+    compile 'org.osmdroid:osmdroid-android:6.0.2'
+    compile 'com.github.MKergall:osmbonuspack:6.5.2'
+
+    compile 'com.github.markshawn:auto-switcher:1.2'
+}
