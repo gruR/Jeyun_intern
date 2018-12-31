@@ -2,6 +2,7 @@ package com.example.jeyun_worker.indooratlas;
 
 import android.Manifest;
 import android.content.Intent;
+import android.graphics.drawable.GradientDrawable;
 import android.support.v4.app.ActivityCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -17,7 +18,7 @@ import com.switcher.builder.CarouselStrategyBuilder;
 import com.switcher.builder.DirectionMode;
 
 public class MainActivity extends AppCompatActivity {
-    private ImageView simple, way;
+    private ImageView simple, way, setting;
     private AutoSwitchView as1, as2;
 
     private final int CODE_PERMISSIONS = 1;
@@ -37,6 +38,7 @@ public class MainActivity extends AppCompatActivity {
         ActivityCompat.requestPermissions( this, neededPermissions, CODE_PERMISSIONS );
         simple = (ImageView)findViewById(R.id.simple);
         way = (ImageView)findViewById(R.id.way);
+        setting = (ImageView)findViewById(R.id.setting);
 
         as1 = (AutoSwitchView)findViewById(R.id.as1);
         as2 = (AutoSwitchView)findViewById(R.id.as2);
@@ -88,7 +90,7 @@ public class MainActivity extends AppCompatActivity {
                 intent = new Intent(MainActivity.this,WayActivity.class);
                 startActivity(intent);
                 break;
-            case R.id.region:
+            case R.id.setting:
                 intent = new Intent(MainActivity.this,RegionsActivity.class);
                 startActivity(intent);
                 break;
