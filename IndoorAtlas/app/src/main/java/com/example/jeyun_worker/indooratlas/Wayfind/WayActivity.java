@@ -3,6 +3,7 @@ package com.example.jeyun_worker.indooratlas.Wayfind;
 
 import android.Manifest;
 import android.content.pm.PackageManager;
+import android.content.res.ColorStateList;
 import android.graphics.Bitmap;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
@@ -228,14 +229,14 @@ public class WayActivity extends FragmentActivity
             @Override
             public void onClick(View v) {
                 animFab();
-                Toast.makeText(v.getContext(), "2층", Toast.LENGTH_LONG).show();
+                Toast.makeText(v.getContext(), "2층", Toast.LENGTH_SHORT).show();
             }
         });
         fab3.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 animFab();
-                Toast.makeText(v.getContext(), "3층", Toast.LENGTH_LONG).show();
+                Toast.makeText(v.getContext(), "3층", Toast.LENGTH_SHORT).show();
             }
         });
 

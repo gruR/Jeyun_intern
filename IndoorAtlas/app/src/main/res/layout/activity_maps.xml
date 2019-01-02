@@ -20,6 +20,8 @@
         android:layout_height="wrap_content"
         android:layout_margin="30px"
         android:clickable="true"
+        android:scaleType="center"
+        android:src="@drawable/fab_main"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintRight_toRightOf="parent" />
 
@@ -30,8 +32,10 @@
         android:layout_margin="30px"
         android:clickable="false"
         android:visibility="invisible"
-        app:layout_constraintRight_toRightOf="parent"
-        app:layout_constraintBottom_toTopOf="@id/fabMain"/>
+        android:src="@drawable/fab_2"
+        android:scaleType="center"
+        app:layout_constraintBottom_toTopOf="@id/fabMain"
+        app:layout_constraintRight_toRightOf="parent" />
 
     <android.support.design.widget.FloatingActionButton
         android:id="@+id/floor3"
@@ -39,7 +43,9 @@
         android:layout_height="wrap_content"
         android:layout_margin="30px"
         android:clickable="false"
+        android:scaleType="center"
+        android:src="@drawable/fab_3"
         android:visibility="invisible"
-        app:layout_constraintRight_toRightOf="parent"
-        app:layout_constraintBottom_toTopOf="@id/floor2"/>
+        app:layout_constraintBottom_toTopOf="@id/floor2"
+        app:layout_constraintRight_toRightOf="parent" />
 </android.support.constraint.ConstraintLayout>

@@ -1,6 +1,7 @@
 <resources>
     <string name="app_name">IndoorAtlas</string>
     <color name="white">#FFFFFF</color>
+    <color name="black">#000000</color>
 
     <string name="venue_outside">Outside mapped area</string>
     <string name="venue_inside">In venue</string>
