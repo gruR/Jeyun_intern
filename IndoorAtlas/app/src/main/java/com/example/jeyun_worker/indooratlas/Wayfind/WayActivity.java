@@ -164,8 +164,12 @@ public class WayActivity extends FragmentActivity
             showLocationCircle(center, location.getAccuracy());
 
             // our camera position needs updating if location has significantly changed
+
             if (mCameraPositionNeedsUpdating) {
-                mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(center, 17.5f));
+                if((int)(center.longitude / 0.01) == 12848 && (int)(center.latitude / 0.01) == 3584)
+                    mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(center, 20.5f));
+                else
+                    mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(center, 17.5f));
                 mCameraPositionNeedsUpdating = false;
             }
         }

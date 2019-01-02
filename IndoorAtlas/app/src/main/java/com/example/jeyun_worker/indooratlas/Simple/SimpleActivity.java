@@ -18,6 +18,9 @@ import android.support.v4.content.ContextCompat;
 import android.os.Bundle;
 import android.text.TextUtils;
 import android.util.Log;
+import android.view.DragEvent;
+import android.view.MotionEvent;
+import android.view.View;
 import android.widget.Toast;
 
 import com.davemorrissey.labs.subscaleview.ImageSource;
@@ -169,6 +172,12 @@ public class SimpleActivity extends FragmentActivity {
         Log.w(TAG, "showFloorPlanImage: " + filePath);
         mImageView.setRadius(mFloorPlan.getMetersToPixels() * dotRadius);
         mImageView.setImage(ImageSource.uri(filePath));
+        mImageView.setOnTouchListener(new View.OnTouchListener() {
+            @Override
+            public boolean onTouch(View v, MotionEvent event) {
+                return true;
+            }
+        });
     }
 
     /**

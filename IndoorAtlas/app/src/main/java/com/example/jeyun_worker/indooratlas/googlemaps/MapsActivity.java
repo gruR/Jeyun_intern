@@ -3,6 +3,7 @@ package com.example.jeyun_worker.indooratlas.googlemaps;
 import android.support.v4.app.FragmentActivity;
 import android.os.Bundle;
 import android.text.TextUtils;
+import android.util.Log;
 
 import com.example.jeyun_worker.indooratlas.R;
 import com.example.jeyun_worker.indooratlas.utils.ExampleUtils;
@@ -91,6 +92,7 @@ public class MapsActivity extends FragmentActivity implements IALocationListener
             if (mMap != null) {
                 mMarker = mMap.addMarker(new MarkerOptions().position(latLng)
                         .icon(BitmapDescriptorFactory.defaultMarker(HUE_IABLUE)));
+                Log.d("testtest", latLng.latitude / 0.01 + " " + latLng.longitude / 0.01);
                 mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(latLng, 17.0f));
             }
         } else {
