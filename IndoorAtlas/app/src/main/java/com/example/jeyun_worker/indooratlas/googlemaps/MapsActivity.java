@@ -1,9 +1,14 @@
 package com.example.jeyun_worker.indooratlas.googlemaps;
 
+import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.FragmentActivity;
 import android.os.Bundle;
 import android.text.TextUtils;
 import android.util.Log;
+import android.view.View;
+import android.view.animation.Animation;
+import android.view.animation.AnimationUtils;
+import android.widget.Toast;
 
 import com.example.jeyun_worker.indooratlas.R;
 import com.example.jeyun_worker.indooratlas.utils.ExampleUtils;
@@ -104,4 +109,6 @@ public class MapsActivity extends FragmentActivity implements IALocationListener
     public void onStatusChanged(String provider, int status, Bundle extras) {
         // N/A
     }
+
+
 }

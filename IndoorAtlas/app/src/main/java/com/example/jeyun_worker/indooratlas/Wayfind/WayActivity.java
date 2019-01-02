@@ -6,11 +6,17 @@ import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
+import android.support.constraint.ConstraintSet;
+import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.FragmentActivity;
 import android.util.Log;
+import android.view.Gravity;
 import android.view.View;
+import android.view.animation.Animation;
+import android.view.animation.AnimationUtils;
+import android.widget.Toast;
 
 import com.example.jeyun_worker.indooratlas.R;
 import com.google.android.gms.maps.CameraUpdateFactory;
@@ -60,6 +66,10 @@ public class WayActivity extends FragmentActivity
     private static final int MAX_DIMENSION = 2048;
 
     private GoogleMap mMap; // Might be null if Google Play services APK is not available.
+
+
+    private FloatingActionButton fabMain, fab2, fab3;
+    private boolean isFabOpen = false;
 
     private Circle mCircle;
     private IARegion mOverlayFloorPlan = null;
@@ -130,7 +140,7 @@ public class WayActivity extends FragmentActivity
 
     private void updateHeading(double heading) {
         if (mHeadingMarker != null) {
-            mHeadingMarker.setRotation((float)heading);
+            mHeadingMarker.setRotation((float) heading);
         }
     }
 
@@ -166,8 +176,8 @@ public class WayActivity extends FragmentActivity
             // our camera position needs updating if location has significantly changed
 
             if (mCameraPositionNeedsUpdating) {
-                if((int)(center.longitude / 0.01) == 12848 && (int)(center.latitude / 0.01) == 3584)
-                    mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(center, 20.5f));
+                if ((int) (center.longitude / 0.01) == 12848 && (int) (center.latitude / 0.01) == 3584)
+                    mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(center, 19.5f));
                 else
                     mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(center, 17.5f));
                 mCameraPositionNeedsUpdating = false;
@@ -199,11 +209,35 @@ public class WayActivity extends FragmentActivity
 
     };
 
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_maps);
+
+        fabMain = (FloatingActionButton)findViewById(R.id.fabMain);
+        fab2 = (FloatingActionButton)findViewById(R.id.floor2);
+        fab3 = (FloatingActionButton)findViewById(R.id.floor3);
+
+        fabMain.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                animFab();
+            }
+        });
+        fab2.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                animFab();
+                Toast.makeText(v.getContext(), "2층", Toast.LENGTH_LONG).show();
+            }
+        });
+        fab3.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                animFab();
+                Toast.makeText(v.getContext(), "3층", Toast.LENGTH_LONG).show();
+            }
+        });
 
         // prevent the screen going to sleep while app is on foreground
         findViewById(android.R.id.content).setKeepScreenOn(true);
@@ -224,6 +258,7 @@ public class WayActivity extends FragmentActivity
         ((SupportMapFragment) getSupportFragmentManager()
                 .findFragmentById(R.id.map))
                 .getMapAsync(this);
+
     }
 
     @Override
@@ -306,7 +341,7 @@ public class WayActivity extends FragmentActivity
         }
 
         final String url = floorPlan.getUrl();
-        Log.d(TAG, "loading floor plan bitmap from "+url);
+        Log.d(TAG, "loading floor plan bitmap from " + url);
 
         mLoadTarget = new Target() {
 
@@ -442,6 +477,23 @@ public class WayActivity extends FragmentActivity
             }
 
             mPolylines.add(mMap.addPolyline(opt));
+        }
+    }
+
+    public void animFab(){
+        if(isFabOpen){
+            fab2.setClickable(false);
+            fab3.setClickable(false);
+            fab2.setVisibility(View.INVISIBLE);
+            fab3.setVisibility(View.INVISIBLE);
+            isFabOpen = false;
+        }
+        else{
+            fab2.setClickable(true);
+            fab3.setClickable(true);
+            fab2.setVisibility(View.VISIBLE);
+            fab3.setVisibility(View.VISIBLE);
+            isFabOpen = true;
         }
     }
 }
