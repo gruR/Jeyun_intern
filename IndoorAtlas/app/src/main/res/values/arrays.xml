@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string-array name="floornumber">
+        <item>2F</item>
+        <item>3F</item>
+    </string-array>
+
+    <string-array name="room2F">
+        <item>회의실1</item>
+        <item>회의실2</item>
+        <item>여자화장실</item>
+        <item>남자화장실</item>
+        <item>전시실</item>
+    </string-array>
+
+    <string-array name="room3F">
+        <item>331</item>
+        <item>332</item>
+        <item>333</item>
+        <item>334</item>
+        <item>335</item>
+        <item>336</item>
+        <item>337</item>
+        <item>여자화장실</item>
+        <item>남자화장실</item>
+        <item>휴게실</item>
+    </string-array>
+
+</resources>
