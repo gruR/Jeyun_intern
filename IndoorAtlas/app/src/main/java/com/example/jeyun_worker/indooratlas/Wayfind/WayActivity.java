@@ -71,6 +71,7 @@ public class WayActivity extends FragmentActivity
 
     private FloatingActionButton fabMain, fab2, fab3;
     private boolean isFabOpen = false;
+    private boolean isFloorSelected = false;
 
     private Circle mCircle;
     private IARegion mOverlayFloorPlan = null;
@@ -167,8 +168,16 @@ public class WayActivity extends FragmentActivity
             final LatLng center = new LatLng(location.getLatitude(), location.getLongitude());
 
             final int newFloor = location.getFloorLevel();
+
             if (mFloor != newFloor) {
                 updateRouteVisualization();
+                switch(newFloor){
+                    case 2:
+                        fabMain.setImageResource(R.drawable.fab_2);
+                        break;
+                    case 3:
+                        fabMain.setImageResource(R.drawable.fab_3);
+                }
             }
             mFloor = newFloor;
 
@@ -178,7 +187,7 @@ public class WayActivity extends FragmentActivity
 
             if (mCameraPositionNeedsUpdating) {
                 if ((int) (center.longitude / 0.01) == 12848 && (int) (center.latitude / 0.01) == 3584)
-                    mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(center, 19.5f));
+                    mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(center, 20.5f));
                 else
                     mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(center, 17.5f));
                 mCameraPositionNeedsUpdating = false;
@@ -230,6 +239,9 @@ public class WayActivity extends FragmentActivity
             public void onClick(View v) {
                 animFab();
                 Toast.makeText(v.getContext(), "2층", Toast.LENGTH_SHORT).show();
+                fabMain.setImageResource(R.drawable.fab_2);
+                fab2.setImageResource(R.drawable.fab_2_s);
+                fab3.setImageResource(R.drawable.fab_3);
             }
         });
         fab3.setOnClickListener(new View.OnClickListener() {
@@ -237,6 +249,9 @@ public class WayActivity extends FragmentActivity
             public void onClick(View v) {
                 animFab();
                 Toast.makeText(v.getContext(), "3층", Toast.LENGTH_SHORT).show();
+                fabMain.setImageResource(R.drawable.fab_3);
+                fab2.setImageResource(R.drawable.fab_2);
+                fab3.setImageResource(R.drawable.fab_3_s);
             }
         });
 

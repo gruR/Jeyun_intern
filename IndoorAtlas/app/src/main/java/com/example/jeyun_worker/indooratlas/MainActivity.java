@@ -40,19 +40,19 @@ public class MainActivity extends AppCompatActivity {
         way = (ImageView)findViewById(R.id.way);
         setting = (ImageView)findViewById(R.id.setting);
 
-        as1 = (AutoSwitchView)findViewById(R.id.as1);
-        as2 = (AutoSwitchView)findViewById(R.id.as2);
-
-        as1.setSwitchStrategy(new CarouselStrategyBuilder().
-                setAnimDuration(900).
-                setInterpolator(new AccelerateDecelerateInterpolator()).
-                setMode(DirectionMode.left2Right).
-                build());
-        as2.setSwitchStrategy(new CarouselStrategyBuilder().
-                setAnimDuration(900).
-                setInterpolator(new AccelerateDecelerateInterpolator()).
-                setMode(DirectionMode.left2Right).
-                build());
+//        as1 = (AutoSwitchView)findViewById(R.id.as1);
+//        as2 = (AutoSwitchView)findViewById(R.id.as2);
+//
+//        as1.setSwitchStrategy(new CarouselStrategyBuilder().
+//                setAnimDuration(900).
+//                setInterpolator(new AccelerateDecelerateInterpolator()).
+//                setMode(DirectionMode.left2Right).
+//                build());
+//        as2.setSwitchStrategy(new CarouselStrategyBuilder().
+//                setAnimDuration(900).
+//                setInterpolator(new AccelerateDecelerateInterpolator()).
+//                setMode(DirectionMode.left2Right).
+//                build());
 
 //        as1.startSwitcher();
 //        as2.startSwitcher();
