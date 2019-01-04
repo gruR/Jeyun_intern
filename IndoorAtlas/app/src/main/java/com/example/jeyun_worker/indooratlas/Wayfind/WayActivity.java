@@ -73,9 +73,6 @@ public class WayActivity extends FragmentActivity
 
     private GoogleMap mMap; // Might be null if Google Play services APK is not available.
 
-    private FloatingActionButton fabMain, fab2, fab3;
-    private boolean isFabOpen = false;
-
     private Circle mCircle;
     private IARegion mOverlayFloorPlan = null;
     private GroundOverlay mGroundOverlay = null;
@@ -225,34 +222,7 @@ public class WayActivity extends FragmentActivity
         editText = (EditText)findViewById(R.id.toolbar_title);
         //setSupportActionBar(toolbar);
 
-        fabMain = (FloatingActionButton)findViewById(R.id.fabMain);
-        fab2 = (FloatingActionButton)findViewById(R.id.floor2);
-        fab3 = (FloatingActionButton)findViewById(R.id.floor3);
-
-
-
-        fabMain.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                animFab();
-            }
-        });
-        fab2.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                animFab();
-                Toast.makeText(v.getContext(), "2층", Toast.LENGTH_LONG).show();
-            }
-        });
-        fab3.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                animFab();
-                Toast.makeText(v.getContext(), "3층", Toast.LENGTH_LONG).show();
-            }
-        });
-
-        // prevent the screen going to sleep while app is on foreground
+               // prevent the screen going to sleep while app is on foreground
         findViewById(android.R.id.content).setKeepScreenOn(true);
 
         // instantiate IALocationManager
@@ -490,23 +460,6 @@ public class WayActivity extends FragmentActivity
             }
 
             mPolylines.add(mMap.addPolyline(opt));
-        }
-    }
-
-    public void animFab(){
-        if(isFabOpen){
-            fab2.setClickable(false);
-            fab3.setClickable(false);
-            fab2.setVisibility(View.INVISIBLE);
-            fab3.setVisibility(View.INVISIBLE);
-            isFabOpen = false;
-        }
-        else{
-            fab2.setClickable(true);
-            fab3.setClickable(true);
-            fab2.setVisibility(View.VISIBLE);
-            fab3.setVisibility(View.VISIBLE);
-            isFabOpen = true;
         }
     }
 }
