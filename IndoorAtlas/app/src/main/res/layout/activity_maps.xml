@@ -6,13 +6,66 @@
     android:layout_height="match_parent"
     android:orientation="vertical">
 
-    <fragment xmlns:android="http://schemas.android.com/apk/res/android"
-        xmlns:tools="http://schemas.android.com/tools"
-        android:id="@+id/map"
-        android:name="com.google.android.gms.maps.SupportMapFragment"
+    <android.support.design.widget.AppBarLayout
+        android:id="@+id/appbar"
+
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        tools:context=".googlemaps.MapsActivity" />
+        android:fitsSystemWindows="true"
+        android:theme="@style/ThemeOverlay.AppCompat.Dark.ActionBar">
+
+        <android.support.design.widget.CollapsingToolbarLayout
+            android:id="@+id/collapsingToolbarLayout"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            app:contentScrim="?attr/colorPrimary"
+            app:layout_scrollFlags="scroll|exitUntilCollapsed">
+
+            <fragment xmlns:android="http://schemas.android.com/apk/res/android"
+                xmlns:tools="http://schemas.android.com/tools"
+                android:id="@+id/map"
+                android:name="com.google.android.gms.maps.SupportMapFragment"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                tools:context=".googlemaps.MapsActivity" />
+
+            <android.support.v7.widget.Toolbar
+                android:id="@+id/toolbar"
+                android:layout_width="match_parent"
+                android:layout_height="?attr/actionBarSize"
+                android:layout_margin="8dp"
+                android:background="@drawable/toolbar_background"
+                app:layout_collapseMode="pin">
+                <LinearLayout
+                    android:id="@+id/linearLayout_focus"
+                    android:focusable="true"
+                    android:focusableInTouchMode="true"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content">
+                    <EditText
+                        android:id="@+id/toolbar_title"
+                        android:layout_width="280dp"
+                        android:layout_height="wrap_content"
+                        android:layout_marginLeft="24dp"
+                        android:background="#00000000"
+                        android:hint="Destination"
+                        android:textColorHint="@android:color/darker_gray"
+                        android:ellipsize="end"
+                        android:singleLine="true"
+                        android:inputType="text"
+                        android:cursorVisible="false"
+                        android:textColor="@android:color/black"
+                        android:textSize="22sp"
+                        android:textStyle="bold" />
+                </LinearLayout>
+            </android.support.v7.widget.Toolbar>
+
+        </android.support.design.widget.CollapsingToolbarLayout>
+
+    </android.support.design.widget.AppBarLayout>
+
+
+
 
     <android.support.design.widget.FloatingActionButton
         android:id="@+id/fabMain"
@@ -20,8 +73,6 @@
         android:layout_height="wrap_content"
         android:layout_margin="30px"
         android:clickable="true"
-        android:scaleType="center"
-        android:src="@drawable/fab_main"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintRight_toRightOf="parent" />
 
@@ -32,10 +83,8 @@
         android:layout_margin="30px"
         android:clickable="false"
         android:visibility="invisible"
-        android:src="@drawable/fab_2"
-        android:scaleType="center"
-        app:layout_constraintBottom_toTopOf="@id/fabMain"
-        app:layout_constraintRight_toRightOf="parent" />
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintBottom_toTopOf="@id/fabMain"/>
 
     <android.support.design.widget.FloatingActionButton
         android:id="@+id/floor3"
@@ -43,9 +92,7 @@
         android:layout_height="wrap_content"
         android:layout_margin="30px"
         android:clickable="false"
-        android:scaleType="center"
-        android:src="@drawable/fab_3"
         android:visibility="invisible"
-        app:layout_constraintBottom_toTopOf="@id/floor2"
-        app:layout_constraintRight_toRightOf="parent" />
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintBottom_toTopOf="@id/floor2"/>
 </android.support.constraint.ConstraintLayout>

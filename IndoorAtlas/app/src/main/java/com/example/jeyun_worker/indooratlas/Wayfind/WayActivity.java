@@ -7,18 +7,22 @@ import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
+import android.support.design.widget.CollapsingToolbarLayout;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.FragmentActivity;
+import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.Gravity;
 import android.view.View;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
+import android.widget.EditText;
 import android.widget.LinearLayout;
 import android.widget.PopupWindow;
 import android.widget.Spinner;
+import android.widget.Toast;
 
 import com.example.jeyun_worker.indooratlas.R;
 import com.google.android.gms.maps.CameraUpdateFactory;
@@ -69,7 +73,8 @@ public class WayActivity extends FragmentActivity
 
     private GoogleMap mMap; // Might be null if Google Play services APK is not available.
 
-    private FloatingActionButton fabMain;
+    private FloatingActionButton fabMain, fab2, fab3;
+    private boolean isFabOpen = false;
 
     private Circle mCircle;
     private IARegion mOverlayFloorPlan = null;
@@ -81,6 +86,9 @@ public class WayActivity extends FragmentActivity
     private Marker mHeadingMarker;
     private List<Polyline> mPolylines = new ArrayList<>();
     private IARoute mCurrentRoute;
+    Toolbar toolbar;
+    CollapsingToolbarLayout collapsingToolbarLayout;
+    EditText editText;
 
     private IAWayfindingRequest mWayfindingDestination;
     private IAWayfindingListener mWayfindingListener = new IAWayfindingListener() {
@@ -163,19 +171,11 @@ public class WayActivity extends FragmentActivity
                 return;
             }
 
-            LatLng center = new LatLng(location.getLatitude(), location.getLongitude());
+            final LatLng center = new LatLng(location.getLatitude(), location.getLongitude());
 
             final int newFloor = location.getFloorLevel();
-
             if (mFloor != newFloor) {
                 updateRouteVisualization();
-                switch (newFloor) {
-                    case 2:
-                        fabMain.setImageResource(R.drawable.fab_2);
-                        break;
-                    case 3:
-                        fabMain.setImageResource(R.drawable.fab_3);
-                }
             }
             mFloor = newFloor;
 
@@ -183,11 +183,9 @@ public class WayActivity extends FragmentActivity
 
             // our camera position needs updating if location has significantly changed
 
-            center = new LatLng(35.840400112374205, 128.48958771675825);
-
             if (mCameraPositionNeedsUpdating) {
                 if ((int) (center.longitude / 0.01) == 12848 && (int) (center.latitude / 0.01) == 3584)
-                    mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(center, 20.5f));
+                    mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(center, 19.5f));
                 else
                     mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(center, 17.5f));
                 mCameraPositionNeedsUpdating = false;
@@ -219,19 +217,38 @@ public class WayActivity extends FragmentActivity
 
     };
 
-    private PopupWindow popupWindow;
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_maps);
+        toolbar = (Toolbar)findViewById(R.id.toolbar);
+        editText = (EditText)findViewById(R.id.toolbar_title);
+        //setSupportActionBar(toolbar);
 
-        fabMain = (FloatingActionButton) findViewById(R.id.fabMain);
+        fabMain = (FloatingActionButton)findViewById(R.id.fabMain);
+        fab2 = (FloatingActionButton)findViewById(R.id.floor2);
+        fab3 = (FloatingActionButton)findViewById(R.id.floor3);
+
+
 
         fabMain.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-
+                animFab();
+            }
+        });
+        fab2.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                animFab();
+                Toast.makeText(v.getContext(), "2층", Toast.LENGTH_LONG).show();
+            }
+        });
+        fab3.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                animFab();
+                Toast.makeText(v.getContext(), "3층", Toast.LENGTH_LONG).show();
             }
         });
 
@@ -394,7 +411,7 @@ public class WayActivity extends FragmentActivity
         if (mMap != null) {
 
             mWayfindingDestination = new IAWayfindingRequest.Builder()
-                    .withFloor(2)
+                    .withFloor(mFloor)
                     .withLatitude(point.latitude)
                     .withLongitude(point.longitude)
                     .build();
@@ -473,6 +490,23 @@ public class WayActivity extends FragmentActivity
             }
 
             mPolylines.add(mMap.addPolyline(opt));
+        }
+    }
+
+    public void animFab(){
+        if(isFabOpen){
+            fab2.setClickable(false);
+            fab3.setClickable(false);
+            fab2.setVisibility(View.INVISIBLE);
+            fab3.setVisibility(View.INVISIBLE);
+            isFabOpen = false;
+        }
+        else{
+            fab2.setClickable(true);
+            fab3.setClickable(true);
+            fab2.setVisibility(View.VISIBLE);
+            fab3.setVisibility(View.VISIBLE);
+            isFabOpen = true;
         }
     }
 }
