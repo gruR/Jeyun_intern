@@ -168,7 +168,7 @@ public class WayActivity extends FragmentActivity
                 return;
             }
 
-            final LatLng center = new LatLng(location.getLatitude(), location.getLongitude());
+            LatLng center = new LatLng(location.getLatitude(), location.getLongitude());
 
             final int newFloor = location.getFloorLevel();
             if (mFloor != newFloor) {
@@ -180,9 +180,11 @@ public class WayActivity extends FragmentActivity
 
             // our camera position needs updating if location has significantly changed
 
+            center = new LatLng(35.840400112374205, 128.48958771675825);
+
             if (mCameraPositionNeedsUpdating) {
                 if ((int) (center.longitude / 0.01) == 12848 && (int) (center.latitude / 0.01) == 3584)
-                    mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(center, 19.5f));
+                    mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(center, 20.0f));
                 else
                     mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(center, 17.5f));
                 mCameraPositionNeedsUpdating = false;
