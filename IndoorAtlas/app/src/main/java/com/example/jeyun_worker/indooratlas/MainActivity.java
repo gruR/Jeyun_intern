@@ -8,7 +8,11 @@ import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.View;
 import android.view.animation.AccelerateDecelerateInterpolator;
+import android.widget.Adapter;
+import android.widget.ArrayAdapter;
+import android.widget.BaseAdapter;
 import android.widget.ImageView;
+import android.widget.ListAdapter;
 
 import com.example.jeyun_worker.indooratlas.Simple.SimpleActivity;
 import com.example.jeyun_worker.indooratlas.Wayfind.WayActivity;
@@ -42,7 +46,7 @@ public class MainActivity extends AppCompatActivity {
 
 //        as1 = (AutoSwitchView)findViewById(R.id.as1);
 //        as2 = (AutoSwitchView)findViewById(R.id.as2);
-//
+
 //        as1.setSwitchStrategy(new CarouselStrategyBuilder().
 //                setAnimDuration(900).
 //                setInterpolator(new AccelerateDecelerateInterpolator()).
