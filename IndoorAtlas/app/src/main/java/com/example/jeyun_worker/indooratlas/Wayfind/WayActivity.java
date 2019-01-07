@@ -494,12 +494,8 @@ public class WayActivity extends AppCompatActivity
     }
     public void SearchingActivity(String Dest)
     {
-
-        if(mDestinationMarker!=null)
-            mDestinationMarker.remove();
         clearRouteVisualization();
         ArrayList<Point> Rooms = new ArrayList<>();
-
         Rooms.add(new Point("331",35.84059498698412,128.48960682749745,3));
         Rooms.add(new Point("332",35.84052975704248,128.48960783332586,3));
         Rooms.add(new Point("333",35.84034521037535, 128.48962392657998,3));
@@ -533,8 +529,6 @@ public class WayActivity extends AppCompatActivity
             }
             else
             {
-                if(mDestinationMarker!=null)
-                    mDestinationMarker.remove();
                 clearRouteVisualization();
             }
         }
