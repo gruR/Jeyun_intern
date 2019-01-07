@@ -2,28 +2,22 @@ package com.example.jeyun_worker.indooratlas.Wayfind;
 
 
 import android.Manifest;
-import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.support.design.widget.CollapsingToolbarLayout;
-import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
 import android.support.v4.app.ActivityCompat;
-import android.support.v4.app.FragmentActivity;
+import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
-import android.view.Gravity;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
-import android.widget.ArrayAdapter;
-import android.widget.Button;
 import android.widget.EditText;
-import android.widget.LinearLayout;
-import android.widget.PopupWindow;
-import android.widget.Spinner;
-import android.widget.Toast;
 
+import com.example.jeyun_worker.indooratlas.Point;
 import com.example.jeyun_worker.indooratlas.R;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
@@ -62,7 +56,7 @@ import java.util.List;
 
 import static android.Manifest.permission.ACCESS_FINE_LOCATION;
 
-public class WayActivity extends FragmentActivity
+public class WayActivity extends AppCompatActivity
         implements GoogleMap.OnMapClickListener, OnMapReadyCallback {
     private static final int MY_PERMISSION_ACCESS_FINE_LOCATION = 42;
 
@@ -72,7 +66,6 @@ public class WayActivity extends FragmentActivity
     private static final int MAX_DIMENSION = 2048;
 
     private GoogleMap mMap; // Might be null if Google Play services APK is not available.
-
     private Circle mCircle;
     private IARegion mOverlayFloorPlan = null;
     private GroundOverlay mGroundOverlay = null;
@@ -87,7 +80,11 @@ public class WayActivity extends FragmentActivity
     CollapsingToolbarLayout collapsingToolbarLayout;
     EditText editText;
 
+
+
+
     private IAWayfindingRequest mWayfindingDestination;
+
     private IAWayfindingListener mWayfindingListener = new IAWayfindingListener() {
         @Override
         public void onWayfindingUpdate(IARoute route) {
@@ -222,7 +219,7 @@ public class WayActivity extends FragmentActivity
         setContentView(R.layout.activity_maps);
         toolbar = (Toolbar)findViewById(R.id.toolbar);
         editText = (EditText)findViewById(R.id.toolbar_title);
-        //setSupportActionBar(toolbar);
+        setSupportActionBar(toolbar);
 
                // prevent the screen going to sleep while app is on foreground
         findViewById(android.R.id.content).setKeepScreenOn(true);
@@ -243,7 +240,38 @@ public class WayActivity extends FragmentActivity
         ((SupportMapFragment) getSupportFragmentManager()
                 .findFragmentById(R.id.map))
                 .getMapAsync(this);
+        /*editText.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
 
+            }
+
+            @Override
+            public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+
+            }
+
+            @Override
+            public void afterTextChanged(Editable editable) {
+                String Where = editText.getText().toString();
+                SearchingActivity(Where);
+            }
+        });*/
+
+
+    }
+    public boolean onCreateOptionsMenu(Menu menu) {
+        getMenuInflater().inflate(R.menu.menu_main, menu);
+        return super.onCreateOptionsMenu(menu);
+    }
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        if(item.getItemId() == R.id.menu_main_serach){
+            String search = editText.getText().toString();
+            SearchingActivity(search);
+        }
+
+        return super.onOptionsItemSelected(item);
     }
 
     @Override
@@ -462,6 +490,53 @@ public class WayActivity extends FragmentActivity
             }
 
             mPolylines.add(mMap.addPolyline(opt));
+        }
+    }
+    public void SearchingActivity(String Dest)
+    {
+
+        if(mDestinationMarker!=null)
+            mDestinationMarker.remove();
+        clearRouteVisualization();
+        ArrayList<Point> Rooms = new ArrayList<>();
+
+        Rooms.add(new Point("331",35.84059498698412,128.48960682749745,3));
+        Rooms.add(new Point("332",35.84052975704248,128.48960783332586,3));
+        Rooms.add(new Point("333",35.84034521037535, 128.48962392657998,3));
+        Rooms.add(new Point("334",35.84027753409677, 128.48961252719164,3));
+        Rooms.add(new Point("335",35.84021339106455, 128.48960548639297,3));
+        Rooms.add(new Point("336",35.84027372900308, 128.48957430571318,3));
+        Rooms.add(new Point("337",35.84034656933619, 128.48958134651184,3));
+        Rooms.add(new Point("남화",35.84045039387448, 128.48950926214457,3));
+        Rooms.add(new Point("여화",35.84048246530124, 128.48950825631618,3));
+        LatLng point;
+        int floor;
+        String Search = editText.getText().toString();
+        for(int i= 0;i<Rooms.size();i++)
+        {
+            if(Search.compareTo(Rooms.get(i).name)==0) {
+                point = new LatLng(Rooms.get(i).Latitude, Rooms.get(i).Longitude);
+                floor = Rooms.get(i).floor;
+                mWayfindingDestination = new IAWayfindingRequest.Builder()
+                        .withFloor(floor)
+                        .withLatitude(point.latitude)
+                        .withLongitude(point.longitude)
+                        .build();
+                if (mDestinationMarker == null) {
+                    mDestinationMarker = mMap.addMarker(new MarkerOptions()
+                            .position(point)
+                            .icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_BLUE)));
+                } else {
+                    mDestinationMarker.setPosition(point);
+                }
+                mIALocationManager.requestWayfindingUpdates(mWayfindingDestination, mWayfindingListener);
+            }
+            else
+            {
+                if(mDestinationMarker!=null)
+                    mDestinationMarker.remove();
+                clearRouteVisualization();
+            }
         }
     }
 }
