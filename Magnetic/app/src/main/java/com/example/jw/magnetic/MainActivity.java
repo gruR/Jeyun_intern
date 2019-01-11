@@ -203,12 +203,9 @@ public class MainActivity extends AppCompatActivity {
         {
             ScanResult=wifiManager.getScanResults();
             wifi.setText("Current Wifi\n");
-            for(int i = 0;i<8;i++)
+            for(int i = 0;i<10;i++)
             {
-                double exp = (27.55 - (20 * Math.log10(ScanResult.get(i).frequency)) + Math.abs(ScanResult.get(i).level)) / 20.0;
-                double dis = (Math.pow(10.0, exp) * 100.0) / 100.0;
-                DecimalFormat df = new DecimalFormat("###.##");
-                wifi.append((i+1)+" .SSID : "+(ScanResult.get(i)).SSID+ " RRSI : "+ (ScanResult.get(i)).level+" distance : "+ df.format(dis)+"\n");
+                wifi.append((i+1)+" .MAC : "+(ScanResult.get(i)).BSSID+ " RRSI : "+ (ScanResult.get(i)).level+"\n");
             }
         }
 
