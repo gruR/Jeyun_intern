@@ -116,12 +116,18 @@
             android:text="측정시작" />
 
         <Button
-            android:id="@+id/btnSave"
+            android:id="@+id/btnMsave"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:onClick="onClickButton"
-            android:text="저장" />
+            android:text="자기 저장" />
 
+        <Button
+            android:id="@+id/btnWsave"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:onClick="onClickButton"
+            android:text="와파 저장" />
     </LinearLayout>
 
     <TextView
