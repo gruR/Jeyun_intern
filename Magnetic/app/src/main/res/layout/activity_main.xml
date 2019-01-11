@@ -67,6 +67,24 @@
     </LinearLayout>
 
     <LinearLayout
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="horizontal">
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Angle : "
+        android:textSize="20dp"
+        android:textStyle="bold" />
+
+    <TextView
+        android:id="@+id/angle"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="0" />
+</LinearLayout>
+    <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="horizontal">
@@ -74,12 +92,12 @@
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Angle : "
+            android:text="Wifi : "
             android:textSize="20dp"
             android:textStyle="bold" />
 
         <TextView
-            android:id="@+id/angle"
+            android:id="@+id/wifi"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="0" />
