@@ -1,13 +1,22 @@
 package com.example.jw.magnetic;
 
 import android.Manifest;
+import android.content.BroadcastReceiver;
 import android.content.Context;
+import android.content.Intent;
+import android.content.IntentFilter;
+import android.content.pm.PackageManager;
 import android.database.sqlite.SQLiteDatabase;
 import android.hardware.Sensor;
 import android.hardware.SensorEvent;
 import android.hardware.SensorEventListener;
 import android.hardware.SensorManager;
+import android.net.wifi.ScanResult;
+import android.net.wifi.WifiManager;
 import android.os.AsyncTask;
+import android.os.Build;
+import android.support.v4.app.ActivityCompat;
+import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
@@ -16,14 +25,19 @@ import android.widget.Button;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import java.text.DecimalFormat;
+import java.util.List;
+
 public class MainActivity extends AppCompatActivity {
     DBHelper dbHelper;
     SQLiteDatabase db;
-    TextView magX, magY, magZ, angle, result;
+    TextView magX, magY, magZ, angle, result,wifi;
     Button measure, save;
 
     static boolean flag = false, done = true;
-
+    WifiManager wifiManager;
+    WifiReciver reciver;
+    List<ScanResult> ScanResult;
     MagClass magClass[] = new MagClass[361];
     SensorManager sensorManager;
 
@@ -34,7 +48,10 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-
+        if(Build.VERSION.SDK_INT>=23 &&ContextCompat.checkSelfPermission(this,Manifest.permission.ACCESS_COARSE_LOCATION)!=PackageManager.PERMISSION_GRANTED)
+        {
+            ActivityCompat.requestPermissions(this,new String[] {Manifest.permission.ACCESS_COARSE_LOCATION},1001);
+        }
         dbHelper = new DBHelper(this);
         db = dbHelper.getWritableDatabase();
 
@@ -43,14 +60,18 @@ public class MainActivity extends AppCompatActivity {
         magZ = (TextView) findViewById(R.id.magZ);
         angle = (TextView) findViewById(R.id.angle);
         result = (TextView) findViewById(R.id.result);
-
+        wifi = (TextView)findViewById(R.id.wifi);
         measure = (Button) findViewById(R.id.btnMeasure);
         save = (Button) findViewById(R.id.btnSave);
+        wifiManager = (WifiManager)getApplicationContext().getSystemService(Context.WIFI_SERVICE);
+        reciver = new WifiReciver();
+        registerReceiver(reciver,new IntentFilter(WifiManager.SCAN_RESULTS_AVAILABLE_ACTION));
     }
 
     @Override
     protected void onPause() {
         super.onPause();
+        unregisterReceiver(reciver);
         sensorManager = (SensorManager) getSystemService(Context.SENSOR_SERVICE);
         sensorManager.unregisterListener(mSensorListener);
     }
@@ -58,7 +79,7 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onResume() {
         super.onResume();
-
+        registerReceiver(reciver,new IntentFilter(WifiManager.SCAN_RESULTS_AVAILABLE_ACTION));
         int delay = SensorManager.SENSOR_DELAY_UI;
         sensorManager = (SensorManager) getSystemService(Context.SENSOR_SERVICE);
         sensorManager.registerListener(mSensorListener, sensorManager.getDefaultSensor(Sensor.TYPE_MAGNETIC_FIELD), delay);
@@ -119,6 +140,7 @@ public class MainActivity extends AppCompatActivity {
         @Override
         protected Void doInBackground(String... strings) {
             if (strings[0].equals("measure")) {
+
                 for (int i = 0; i < 361; i++)
                     magClass[i] = new MagClass();
                 while (!done) {
@@ -159,9 +181,12 @@ public class MainActivity extends AppCompatActivity {
                 flag = true;
                 done = false;
                 result.setText("측정 중");
+                wifiManager.startScan();
+                wifi.setText("Start");
                 measureTask.execute("measure");
                 break;
             case R.id.btnSave:
+                unregisterReceiver(reciver);
                // if (done) {
                     CustomTask sqlTask = new CustomTask();
                     sqlTask.execute("save");
@@ -171,5 +196,21 @@ public class MainActivity extends AppCompatActivity {
 
                 break;
         }
+    }
+    class WifiReciver extends BroadcastReceiver
+    {
+        public void onReceive(Context c, Intent intnet)
+        {
+            ScanResult=wifiManager.getScanResults();
+            wifi.setText("Current Wifi\n");
+            for(int i = 0;i<8;i++)
+            {
+                double exp = (27.55 - (20 * Math.log10(ScanResult.get(i).frequency)) + Math.abs(ScanResult.get(i).level)) / 20.0;
+                double dis = (Math.pow(10.0, exp) * 100.0) / 100.0;
+                DecimalFormat df = new DecimalFormat("###.##");
+                wifi.append((i+1)+" .SSID : "+(ScanResult.get(i)).SSID+ " RRSI : "+ (ScanResult.get(i)).level+" distance : "+ df.format(dis)+"\n");
+            }
+        }
+
     }
 }
