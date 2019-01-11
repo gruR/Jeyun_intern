@@ -173,10 +173,25 @@ public class MainActivity extends AppCompatActivity {
                 Log.i("sqlQuery", sql);
             }else if (strings[0].equals("Wsave")) {
                 String temp = wifi.getText().toString();
-                //String sql = "INSERT INTO mValue(magX, magY, magZ, magT) VALUES (" + magX.getText().toString() + ", " + magY.getText().toString() + ", " + magZ.getText().toString() + ", " + String.valueOf(t) + ");";
-                //db.execSQL(sql);
+                String sql = "";
 
-                Log.i("sqlQuery", temp);
+                int i;
+                for(i=0; i<9; i++)
+                {
+                    if(50+38*i <= temp.length())
+                    {
+                        sql = "INSERT INTO wValue(macId, wifi) VALUES ('" + temp.substring(22+38*i, 39+38*i) + "', " + temp.substring(47+38*i, 50+38*i)+ ");";
+                        db.execSQL(sql);
+                        Log.i("sqlQuery", temp.substring(22+(38*i),39+(38*i)) + " " + temp.substring(47+(38*i),50+(38*i)));
+                    }
+                    else
+                        break;
+                }
+                if(i==9) {
+                    sql = "INSERT INTO wValue(macId, wifi) VALUES ('" + temp.substring(365,382) + "', " + temp.substring(390, 393)+ ");";
+                    db.execSQL(sql);
+                    Log.i("sqlQuery", temp.substring(365, 382) + " " + temp.substring(390, 393));
+                }
             }
             return null;
         }
@@ -217,6 +232,7 @@ public class MainActivity extends AppCompatActivity {
             for (int i = 0; i < 10; i++) {
                 wifi.append((i + 1) + " .MAC : " + (ScanResult.get(i)).BSSID + " RRSI : " + (ScanResult.get(i)).level + "\n");
             }
+            result.setText("측정 끝");
         }
 
     }
