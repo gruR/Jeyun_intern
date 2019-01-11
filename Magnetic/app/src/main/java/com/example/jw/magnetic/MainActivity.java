@@ -203,7 +203,7 @@ public class MainActivity extends AppCompatActivity {
 
                 break;
             case R.id.btnWsave:
-                unregisterReceiver(reciver);
+                //unregisterReceiver(reciver);
                 CustomTask wsaveTask = new CustomTask();
                 wsaveTask.execute("Wsave");
                 break;
