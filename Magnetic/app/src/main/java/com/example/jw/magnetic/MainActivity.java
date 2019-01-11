@@ -31,8 +31,7 @@ import java.util.List;
 public class MainActivity extends AppCompatActivity {
     DBHelper dbHelper;
     SQLiteDatabase db;
-    TextView magX, magY, magZ, angle, result,wifi;
-    Button measure, save;
+    TextView magX, magY, magZ, angle, result, wifi;
 
     static boolean flag = false, done = true;
     WifiManager wifiManager;
@@ -48,9 +47,8 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        if(Build.VERSION.SDK_INT>=23 &&ContextCompat.checkSelfPermission(this,Manifest.permission.ACCESS_COARSE_LOCATION)!=PackageManager.PERMISSION_GRANTED)
-        {
-            ActivityCompat.requestPermissions(this,new String[] {Manifest.permission.ACCESS_COARSE_LOCATION},1001);
+        if (Build.VERSION.SDK_INT >= 23 && ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+            ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.ACCESS_COARSE_LOCATION}, 1001);
         }
         dbHelper = new DBHelper(this);
         db = dbHelper.getWritableDatabase();
@@ -60,12 +58,11 @@ public class MainActivity extends AppCompatActivity {
         magZ = (TextView) findViewById(R.id.magZ);
         angle = (TextView) findViewById(R.id.angle);
         result = (TextView) findViewById(R.id.result);
-        wifi = (TextView)findViewById(R.id.wifi);
-        measure = (Button) findViewById(R.id.btnMeasure);
-        save = (Button) findViewById(R.id.btnSave);
-        wifiManager = (WifiManager)getApplicationContext().getSystemService(Context.WIFI_SERVICE);
+        wifi = (TextView) findViewById(R.id.wifi);
+
+        wifiManager = (WifiManager) getApplicationContext().getSystemService(Context.WIFI_SERVICE);
         reciver = new WifiReciver();
-        registerReceiver(reciver,new IntentFilter(WifiManager.SCAN_RESULTS_AVAILABLE_ACTION));
+        registerReceiver(reciver, new IntentFilter(WifiManager.SCAN_RESULTS_AVAILABLE_ACTION));
     }
 
     @Override
@@ -79,7 +76,7 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onResume() {
         super.onResume();
-        registerReceiver(reciver,new IntentFilter(WifiManager.SCAN_RESULTS_AVAILABLE_ACTION));
+        registerReceiver(reciver, new IntentFilter(WifiManager.SCAN_RESULTS_AVAILABLE_ACTION));
         int delay = SensorManager.SENSOR_DELAY_UI;
         sensorManager = (SensorManager) getSystemService(Context.SENSOR_SERVICE);
         sensorManager.registerListener(mSensorListener, sensorManager.getDefaultSensor(Sensor.TYPE_MAGNETIC_FIELD), delay);
@@ -117,7 +114,7 @@ public class MainActivity extends AppCompatActivity {
                             prevAngle += temp;
 
                     }
-                    angle.setText(""+(int)Math.toDegrees(prevAngle));
+                    angle.setText("" + (int) Math.toDegrees(prevAngle));
                     prevTime = event.timestamp;
                     break;
 
@@ -141,34 +138,45 @@ public class MainActivity extends AppCompatActivity {
         protected Void doInBackground(String... strings) {
             if (strings[0].equals("measure")) {
 
-                for (int i = 0; i < 361; i++)
-                    magClass[i] = new MagClass();
-                while (!done) {
-                    int i, count = 0;
-                    for (i = 0; i < 360; i++) {
-                        if (magClass[i].getSize() == 10 && !magClass[i].isPrinted()) {
-                            magClass[i].setPrinted(true);
-                            count++;
-                            String temp = String.valueOf((int) Math.ceil(count / 360));
-                            result.setText(temp);
-                        } else if (magClass[i].getSize() < 10)
-                            continue;
-                    }
-                    if (count == 360)
-                        done = true;
-                }
+//                for (int i = 0; i < 361; i++)
+//                    magClass[i] = new MagClass();
+//                while (!done) {
+//                    int i, count = 0;
+//                    for (i = 0; i < 360; i++) {
+//                        if (magClass[i].getSize() == 10 && !magClass[i].isPrinted()) {
+//                            magClass[i].setPrinted(true);
+//                            count++;
+//                            String temp = String.valueOf((int) Math.ceil(count / 360));
+//                            result.setText(temp);
+//                        } else if (magClass[i].getSize() < 10)
+//                            continue;
+//                    }
+//                    if (count == 360)
+//                        done = true;
+//                }
                 flag = false;
-            } else if (strings[0].equals("save")) {
+            } else if (strings[0].equals("Msave")) {
 //                for (int i = 0; i < 360; i++) {
 //                    String sql = "INSERT INTO mValue(magX, magY, magZ) VALUES (" + magClass[i].getValue()[0] + ", " + magClass[i].getValue()[1] + ", " + magClass[i].getValue()[2] + ");";
 //                    db.execSQL(sql);
 //                }
 //                done = false;
+                double x, y, z, t;
+                x = Double.parseDouble(magX.getText().toString());
+                y = Double.parseDouble(magY.getText().toString());
+                z = Double.parseDouble(magZ.getText().toString());
+                t = Math.sqrt(x * x + y * y + z * z);
 
-                String sql = "INSERT INTO mValue(magX, magY, magZ) VALUES (" + magX.getText().toString() + ", " + magY.getText().toString() + ", " + magZ.getText().toString() + ");";
+                String sql = "INSERT INTO mValue(magX, magY, magZ, magT) VALUES (" + magX.getText().toString() + ", " + magY.getText().toString() + ", " + magZ.getText().toString() + ", " + String.valueOf(t) + ");";
                 db.execSQL(sql);
 
                 Log.i("sqlQuery", sql);
+            }else if (strings[0].equals("Wsave")) {
+                String temp = wifi.getText().toString();
+                //String sql = "INSERT INTO mValue(magX, magY, magZ, magT) VALUES (" + magX.getText().toString() + ", " + magY.getText().toString() + ", " + magZ.getText().toString() + ", " + String.valueOf(t) + ");";
+                //db.execSQL(sql);
+
+                Log.i("sqlQuery", temp);
             }
             return null;
         }
@@ -185,27 +193,29 @@ public class MainActivity extends AppCompatActivity {
                 wifi.setText("Start");
                 measureTask.execute("measure");
                 break;
-            case R.id.btnSave:
-                unregisterReceiver(reciver);
-               // if (done) {
-                    CustomTask sqlTask = new CustomTask();
-                    sqlTask.execute("save");
+            case R.id.btnMsave:
+                // if (done) {
+                CustomTask msaveTask = new CustomTask();
+                msaveTask.execute("Msave");
 //                } else {
 //                    Toast.makeText(this, "측정을 해야합니다", Toast.LENGTH_SHORT).show();
 //                }
 
                 break;
+            case R.id.btnWsave:
+                unregisterReceiver(reciver);
+                CustomTask wsaveTask = new CustomTask();
+                wsaveTask.execute("Wsave");
+                break;
         }
     }
-    class WifiReciver extends BroadcastReceiver
-    {
-        public void onReceive(Context c, Intent intnet)
-        {
-            ScanResult=wifiManager.getScanResults();
+
+    class WifiReciver extends BroadcastReceiver {
+        public void onReceive(Context c, Intent intnet) {
+            ScanResult = wifiManager.getScanResults();
             wifi.setText("Current Wifi\n");
-            for(int i = 0;i<10;i++)
-            {
-                wifi.append((i+1)+" .MAC : "+(ScanResult.get(i)).BSSID+ " RRSI : "+ (ScanResult.get(i)).level+"\n");
+            for (int i = 0; i < 10; i++) {
+                wifi.append((i + 1) + " .MAC : " + (ScanResult.get(i)).BSSID + " RRSI : " + (ScanResult.get(i)).level + "\n");
             }
         }
 
