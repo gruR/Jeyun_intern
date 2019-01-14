@@ -172,7 +172,7 @@ public class MainActivity extends AppCompatActivity {
                 z = Double.parseDouble(magZ.getText().toString());
                 t = Math.sqrt(x * x + y * y + z * z);
 
-                String sql = "INSERT INTO mValue(blockNum, magX, magY, magZ, magT) VALUES (" +bCount.getText().toString() +","+ magX.getText().toString() + ", " + magY.getText().toString() + ", " + magZ.getText().toString() + ", " + String.valueOf(t) + ");";
+                String sql = "INSERT INTO mValue(magX, magY, magZ, magT) VALUES ("+magX.getText().toString() + ", " + magY.getText().toString() + ", " + magZ.getText().toString() + ", " + String.valueOf(t) + ");";
                 db.execSQL(sql);
 
 
