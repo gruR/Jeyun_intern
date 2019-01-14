@@ -187,7 +187,7 @@ public class MainActivity extends AppCompatActivity {
                 int i;
                 for (i = 0; i < 9; i++) {
                     if (50 + 38 * i <= temp.length()) {
-                        sql = "INSERT INTO wValue(macId, wifi, blockNum) VALUES ('" + temp.substring(22 + 38 * i, 39 + 38 * i) + "', " + temp.substring(47 + 38 * i, 50 + 38 * i) + ", "+bCount.getText().toString() +");";
+                        sql = "INSERT INTO wValue(macId, wifi, blockNum) VALUES ('" + temp.substring(22 + 38 * i, 39 + 38 * i) + "', " + temp.substring(47 + 38 * i, 50 + 38 * i) + ", "+String.valueOf(blockCnt) +");";
                         db.execSQL(sql);
                         Log.i("sqlQuery", temp.substring(22 + (38 * i), 39 + (38 * i)) + " " + temp.substring(47 + (38 * i), 50 + (38 * i)));
                     } else
@@ -195,7 +195,7 @@ public class MainActivity extends AppCompatActivity {
                 }
                 if (i == 9) {
                     if (50 + 38 * i <= temp.length()) {
-                        sql = "INSERT INTO wValue(macId, wifi) VALUES ('" + temp.substring(365, 382) + "', " + temp.substring(390, 393) + ");";
+                        sql = "INSERT INTO wValue(macId, wifi, blockNum) VALUES ('" + temp.substring(365, 382) + "', " + temp.substring(390, 393) +", "+ String.valueOf(blockCnt)+");";
                         db.execSQL(sql);
                         Log.i("sqlQuery", temp.substring(365, 382) + " " + temp.substring(390, 393));
                     }
