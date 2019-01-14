@@ -24,7 +24,7 @@ public class CalClass {
         //Log.i("Calclass+ReadDB", result.getCount()+"");
         while (!result.isLast()) {
             result.moveToNext();
-            DBvalue.put(result.getInt(1), result.getDouble(5));
+            DBvalue.put(result.getInt(0), result.getDouble(4));
         }
         result.close();
     }
