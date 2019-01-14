@@ -31,7 +31,7 @@ import java.util.List;
 public class MainActivity extends AppCompatActivity {
     DBHelper dbHelper;
     SQLiteDatabase db;
-    TextView magX, magY, magZ, angle, result, wifi;
+    TextView magX, magY, magZ, angle, result, wifi, bCount;
 
     static boolean flag = false, done = true;
     WifiManager wifiManager;
@@ -59,10 +59,14 @@ public class MainActivity extends AppCompatActivity {
         angle = (TextView) findViewById(R.id.angle);
         result = (TextView) findViewById(R.id.result);
         wifi = (TextView) findViewById(R.id.wifi);
+        bCount = (TextView)findViewById(R.id.blockCnt);
 
         wifiManager = (WifiManager) getApplicationContext().getSystemService(Context.WIFI_SERVICE);
         reciver = new WifiReciver();
         registerReceiver(reciver, new IntentFilter(WifiManager.SCAN_RESULTS_AVAILABLE_ACTION));
+
+        CalClass calClass = new CalClass(db);
+        calClass.calOpt(35);
     }
 
     @Override
@@ -99,9 +103,9 @@ public class MainActivity extends AppCompatActivity {
                     magZ.setText("" + v[2]);
 
                     if (flag == true) {
-                        Log.i("magnetic class", (Integer.parseInt(angle.getText().toString()) + 180) + " " + magClass[Integer.parseInt(angle.getText().toString()) + 180].getSize());
-                        if (magClass[Integer.parseInt(angle.getText().toString()) + 180].getSize() < 10)
-                            magClass[Integer.parseInt(angle.getText().toString()) + 180].addValue(v[0], v[1], v[2]);
+//                        Log.i("magnetic class", (Integer.parseInt(angle.getText().toString()) + 180) + " " + magClass[Integer.parseInt(angle.getText().toString()) + 180].getSize());
+//                        if (magClass[Integer.parseInt(angle.getText().toString()) + 180].getSize() < 10)
+//                            magClass[Integer.parseInt(angle.getText().toString()) + 180].addValue(v[0], v[1], v[2]);
                     }
                     break;
                 case Sensor.TYPE_GYROSCOPE:
@@ -154,6 +158,7 @@ public class MainActivity extends AppCompatActivity {
 //                    if (count == 360)
 //                        done = true;
 //                }
+
                 flag = false;
             } else if (strings[0].equals("Msave")) {
 //                for (int i = 0; i < 360; i++) {
@@ -167,8 +172,9 @@ public class MainActivity extends AppCompatActivity {
                 z = Double.parseDouble(magZ.getText().toString());
                 t = Math.sqrt(x * x + y * y + z * z);
 
-                String sql = "INSERT INTO mValue(magX, magY, magZ, magT) VALUES (" + magX.getText().toString() + ", " + magY.getText().toString() + ", " + magZ.getText().toString() + ", " + String.valueOf(t) + ");";
+                String sql = "INSERT INTO mValue(blockNum, magX, magY, magZ, magT) VALUES (" +bCount.getText().toString() +","+ magX.getText().toString() + ", " + magY.getText().toString() + ", " + magZ.getText().toString() + ", " + String.valueOf(t) + ");";
                 db.execSQL(sql);
+
 
                 Log.i("sqlQuery", sql);
             }else if (strings[0].equals("Wsave")) {
@@ -207,6 +213,8 @@ public class MainActivity extends AppCompatActivity {
                 wifiManager.startScan();
                 wifi.setText("Start");
                 measureTask.execute("measure");
+
+
                 break;
             case R.id.btnMsave:
                 // if (done) {
@@ -215,7 +223,7 @@ public class MainActivity extends AppCompatActivity {
 //                } else {
 //                    Toast.makeText(this, "측정을 해야합니다", Toast.LENGTH_SHORT).show();
 //                }
-
+                bCount.setText(String.valueOf(Integer.parseInt(bCount.getText().toString())+1));
                 break;
             case R.id.btnWsave:
                 //unregisterReceiver(reciver);
@@ -229,7 +237,7 @@ public class MainActivity extends AppCompatActivity {
         public void onReceive(Context c, Intent intnet) {
             ScanResult = wifiManager.getScanResults();
             wifi.setText("Current Wifi\n");
-            for (int i = 0; i < 10; i++) {
+            for (int i = 0; i < ScanResult.size(); i++) {
                 wifi.append((i + 1) + " .MAC : " + (ScanResult.get(i)).BSSID + " RRSI : " + (ScanResult.get(i)).level + "\n");
             }
             result.setText("측정 끝");
