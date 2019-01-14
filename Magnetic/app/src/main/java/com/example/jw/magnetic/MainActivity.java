@@ -59,14 +59,14 @@ public class MainActivity extends AppCompatActivity {
         angle = (TextView) findViewById(R.id.angle);
         result = (TextView) findViewById(R.id.result);
         wifi = (TextView) findViewById(R.id.wifi);
-        bCount = (TextView)findViewById(R.id.blockCnt);
+        bCount = (TextView) findViewById(R.id.blockCnt);
 
         wifiManager = (WifiManager) getApplicationContext().getSystemService(Context.WIFI_SERVICE);
         reciver = new WifiReciver();
         registerReceiver(reciver, new IntentFilter(WifiManager.SCAN_RESULTS_AVAILABLE_ACTION));
 
-        CalClass calClass = new CalClass(db);
-        calClass.calOpt(35);
+//        CalClass calClass = new CalClass(db);
+//        calClass.calOpt(35);
     }
 
     @Override
@@ -172,31 +172,30 @@ public class MainActivity extends AppCompatActivity {
                 z = Double.parseDouble(magZ.getText().toString());
                 t = Math.sqrt(x * x + y * y + z * z);
 
-                String sql = "INSERT INTO mValue(blockNum, magX, magY, magZ, magT) VALUES (" +bCount.getText().toString() +","+ magX.getText().toString() + ", " + magY.getText().toString() + ", " + magZ.getText().toString() + ", " + String.valueOf(t) + ");";
+                String sql = "INSERT INTO mValue(magX, magY, magZ, magT) VALUES (" + magX.getText().toString() + ", " + magY.getText().toString() + ", " + magZ.getText().toString() + ", " + String.valueOf(t) + ");";
                 db.execSQL(sql);
 
 
                 Log.i("sqlQuery", sql);
-            }else if (strings[0].equals("Wsave")) {
+            } else if (strings[0].equals("Wsave")) {
                 String temp = wifi.getText().toString();
                 String sql = "";
 
                 int i;
-                for(i=0; i<9; i++)
-                {
-                    if(50+38*i <= temp.length())
-                    {
-                        sql = "INSERT INTO wValue(macId, wifi) VALUES ('" + temp.substring(22+38*i, 39+38*i) + "', " + temp.substring(47+38*i, 50+38*i)+ ");";
+                for (i = 0; i < 9; i++) {
+                    if (50 + 38 * i <= temp.length()) {
+                        sql = "INSERT INTO wValue(macId, wifi) VALUES ('" + temp.substring(22 + 38 * i, 39 + 38 * i) + "', " + temp.substring(47 + 38 * i, 50 + 38 * i) + ");";
                         db.execSQL(sql);
-                        Log.i("sqlQuery", temp.substring(22+(38*i),39+(38*i)) + " " + temp.substring(47+(38*i),50+(38*i)));
-                    }
-                    else
+                        Log.i("sqlQuery", temp.substring(22 + (38 * i), 39 + (38 * i)) + " " + temp.substring(47 + (38 * i), 50 + (38 * i)));
+                    } else
                         break;
                 }
-                if(i==9) {
-                    sql = "INSERT INTO wValue(macId, wifi) VALUES ('" + temp.substring(365,382) + "', " + temp.substring(390, 393)+ ");";
-                    db.execSQL(sql);
-                    Log.i("sqlQuery", temp.substring(365, 382) + " " + temp.substring(390, 393));
+                if (i == 9) {
+                    if (50 + 38 * i <= temp.length()) {
+                        sql = "INSERT INTO wValue(macId, wifi) VALUES ('" + temp.substring(365, 382) + "', " + temp.substring(390, 393) + ");";
+                        db.execSQL(sql);
+                        Log.i("sqlQuery", temp.substring(365, 382) + " " + temp.substring(390, 393));
+                    }
                 }
             }
             return null;
@@ -223,7 +222,7 @@ public class MainActivity extends AppCompatActivity {
 //                } else {
 //                    Toast.makeText(this, "측정을 해야합니다", Toast.LENGTH_SHORT).show();
 //                }
-                bCount.setText(String.valueOf(Integer.parseInt(bCount.getText().toString())+1));
+                bCount.setText(String.valueOf(Integer.parseInt(bCount.getText().toString()) + 1));
                 break;
             case R.id.btnWsave:
                 //unregisterReceiver(reciver);

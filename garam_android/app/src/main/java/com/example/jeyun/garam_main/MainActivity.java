@@ -52,8 +52,8 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
 
     //Sensor
     private SensorManager sensorManager;
-    private TextView count;
-    private TextView number;
+//    private TextView count;
+//    private TextView number;
     private int num;
     private int count_num = 0;
     private int count_temp;
@@ -111,8 +111,8 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
         num = 0;
         count_num = 0;
         count_temp = 0;
-        //count = (TextView) findViewById(R.id.count);
-        //number = (TextView) findViewById(R.id.number);
+//        count = (TextView) findViewById(R.id.count);
+//        number = (TextView) findViewById(R.id.number);
         sensorManager = (SensorManager) getSystemService(Context.SENSOR_SERVICE);
 
         SDhandler = new accSensor(sensorManager, (MapView) getSupportFragmentManager().findFragmentById(R.id.fragMapView));
@@ -192,7 +192,7 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
 
     private void updateThread() {//GUI 분리
         num++;
-        number.setText(String.valueOf(num));
+//        number.setText(String.valueOf(num));
 
         if (CURRENT_STATE == MODE_STATE.Calibration) {
             textView_state.setText("Calibration 중입니다.");
@@ -757,7 +757,7 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
 
     public void stepCountIncrease(int inputCount) {
         count_num += inputCount;
-        count.setText(String.valueOf(count_num));
+//        count.setText(String.valueOf(count_num));
     }
 
     //입력한 각도로 마커의 방향을 변경한다
