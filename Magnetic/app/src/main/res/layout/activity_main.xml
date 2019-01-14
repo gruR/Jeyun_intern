@@ -107,25 +107,6 @@
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:orientation="horizontal">
-
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Count : "
-            android:textSize="20dp"
-            android:textStyle="bold" />
-
-        <TextView
-            android:id="@+id/blockCnt"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="0" />
-    </LinearLayout>
-
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
         android:gravity="center">
 
         <Button
@@ -134,6 +115,12 @@
             android:layout_height="wrap_content"
             android:onClick="onClickButton"
             android:text="측정시작" />
+
+        <Button
+            android:id="@+id/blockCnt"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="0" />
 
         <Button
             android:id="@+id/btnMsave"

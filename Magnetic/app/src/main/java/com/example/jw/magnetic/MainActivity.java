@@ -172,7 +172,7 @@ public class MainActivity extends AppCompatActivity {
                 z = Double.parseDouble(magZ.getText().toString());
                 t = Math.sqrt(x * x + y * y + z * z);
 
-                String sql = "INSERT INTO mValue(magX, magY, magZ, magT) VALUES (" + magX.getText().toString() + ", " + magY.getText().toString() + ", " + magZ.getText().toString() + ", " + String.valueOf(t) + ");";
+                String sql = "INSERT INTO mValue(magX, magY, magZ, magT, blockNum) VALUES (" + magX.getText().toString() + ", " + magY.getText().toString() + ", " + magZ.getText().toString() + ", " + String.valueOf(t) + ", "+bCount.getText().toString()+");";
                 db.execSQL(sql);
 
 
@@ -184,7 +184,7 @@ public class MainActivity extends AppCompatActivity {
                 int i;
                 for (i = 0; i < 9; i++) {
                     if (50 + 38 * i <= temp.length()) {
-                        sql = "INSERT INTO wValue(macId, wifi) VALUES ('" + temp.substring(22 + 38 * i, 39 + 38 * i) + "', " + temp.substring(47 + 38 * i, 50 + 38 * i) + ");";
+                        sql = "INSERT INTO wValue(macId, wifi, blockNum) VALUES ('" + temp.substring(22 + 38 * i, 39 + 38 * i) + "', " + temp.substring(47 + 38 * i, 50 + 38 * i) + ", "+bCount.getText().toString() +");";
                         db.execSQL(sql);
                         Log.i("sqlQuery", temp.substring(22 + (38 * i), 39 + (38 * i)) + " " + temp.substring(47 + (38 * i), 50 + (38 * i)));
                     } else
@@ -222,12 +222,15 @@ public class MainActivity extends AppCompatActivity {
 //                } else {
 //                    Toast.makeText(this, "측정을 해야합니다", Toast.LENGTH_SHORT).show();
 //                }
-                bCount.setText(String.valueOf(Integer.parseInt(bCount.getText().toString()) + 1));
+
                 break;
             case R.id.btnWsave:
                 //unregisterReceiver(reciver);
                 CustomTask wsaveTask = new CustomTask();
                 wsaveTask.execute("Wsave");
+                break;
+            case R.id.blockCnt:
+                bCount.setText(String.valueOf(Integer.parseInt(bCount.getText().toString()) + 1));
                 break;
         }
     }

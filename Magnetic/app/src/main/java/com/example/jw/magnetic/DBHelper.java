@@ -14,10 +14,10 @@ public class DBHelper extends SQLiteOpenHelper {
     public void onCreate(SQLiteDatabase db) {
         db.execSQL("CREATE TABLE mValue "+
                 "(_id INTEGER PRIMARY KEY AUTOINCREMENT, " +
-                "magX REAL, magY REAL, magZ REAL, magT REAL);");
+                "magX REAL, magY REAL, magZ REAL, magT REAL, blockNum INTEGER);");
         db.execSQL("CREATE TABLE wValue "+
                 "(_id INTEGER PRIMARY KEY AUTOINCREMENT, " +
-                "macId TEXT, wifi REAL);");
+                "macId TEXT, wifi REAL, blockNum INTEGER);");
     }
 
     @Override
