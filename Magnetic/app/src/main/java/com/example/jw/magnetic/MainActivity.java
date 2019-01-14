@@ -31,7 +31,8 @@ import java.util.List;
 public class MainActivity extends AppCompatActivity {
     DBHelper dbHelper;
     SQLiteDatabase db;
-    TextView magX, magY, magZ, angle, result, wifi, bCount;
+    TextView magX, magY, magZ, angle, result, wifi;
+    Button bCount;
 
     static boolean flag = false, done = true;
     WifiManager wifiManager;
@@ -42,6 +43,8 @@ public class MainActivity extends AppCompatActivity {
 
     private double prevTime = 0, prevAngle = 0;
     private static final float NS2S = 1.0f / 1000000000.0f;
+
+    int blockCnt = 0;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -59,7 +62,7 @@ public class MainActivity extends AppCompatActivity {
         angle = (TextView) findViewById(R.id.angle);
         result = (TextView) findViewById(R.id.result);
         wifi = (TextView) findViewById(R.id.wifi);
-        bCount = (TextView) findViewById(R.id.blockCnt);
+        bCount = (Button) findViewById(R.id.blockCnt);
 
         wifiManager = (WifiManager) getApplicationContext().getSystemService(Context.WIFI_SERVICE);
         reciver = new WifiReciver();
@@ -230,7 +233,8 @@ public class MainActivity extends AppCompatActivity {
                 wsaveTask.execute("Wsave");
                 break;
             case R.id.blockCnt:
-                bCount.setText(String.valueOf(Integer.parseInt(bCount.getText().toString()) + 1));
+                blockCnt++;
+                bCount.setText(String.valueOf(blockCnt));
                 break;
         }
     }
