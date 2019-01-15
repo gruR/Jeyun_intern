@@ -1,3 +1,5 @@
+// move marker
+
 package com.example.jeyun.garam_main;
 
 import android.content.Context;
@@ -13,11 +15,12 @@ public class MovingUnit {
     private float Y;
     public static float MarkerX = 0;
     public static float MarkerY = 0;
-    public static float positionX = 29;
+
+    // 0,0 좌표
+    public static float positionX = 31;
     public static float positionY = 98;
     int MAX_PIXEL_WIDTH = 500;
     int MAX_PIXEL_HEIGHT = 1000;
-
     private float Width;
     private float Height;
 
@@ -48,12 +51,12 @@ public class MovingUnit {
     int width;
     int height;
 
-    private float step_interval = (float) 0.9;
+    private float step_interval = (float) 0.15; //0.9에서 수정
 
     // 초기 위치에서 변화
     public static void setInitialPos(int x, int y)
     {
-        positionX = 30 + x*2;
+        positionX = 31 + x*2;
         positionY = 98 - y*2;
     }
 
@@ -67,7 +70,7 @@ public class MovingUnit {
         dm = context.getResources().getDisplayMetrics();
         width = dm.widthPixels;
         height = dm.heightPixels;
-        //마커의 현재 위치 : positionX, positionY, 엑셀 값 참조해서 할 것. (0, 0)위치 = 30, 98 // 마커가 위로 == y--, 마커가 왼쪽으로 = x--;
+        //마커의 현재 위치 : positionX, positionY, 엑셀 값 참조해서 할 것. (0, 0)위치 = 31, 98 // 마커가 위로 == y--, 마커가 왼쪽으로 = x--;
 
         setXY(0, 0);
     }
