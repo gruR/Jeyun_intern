@@ -41,10 +41,14 @@ public class MainActivity extends AppCompatActivity {
     MagClass magClass[] = new MagClass[361];
     SensorManager sensorManager;
 
-    private double prevTime = 0, prevAngle = 0;
-    private static final float NS2S = 1.0f / 1000000000.0f;
-
     int blockCnt = 0;
+
+    float[] rota = new float[9];
+    float[] result_data = new float[3];
+    float[] mag_data = new float[3];
+    float[] acc_data = new float[3];
+
+    int wifiresult = -1;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -68,8 +72,17 @@ public class MainActivity extends AppCompatActivity {
         reciver = new WifiReciver();
         registerReceiver(reciver, new IntentFilter(WifiManager.SCAN_RESULTS_AVAILABLE_ACTION));
 
-//        CalClass calClass = new CalClass(db);
-//        calClass.calOpt(35);
+        CalClass calClass = new CalClass(db);
+        wifiresult = calClass.calWifi(new String[][]{{"00:26:66:a0:88:a2", "-41.0"},
+                {"f8:32:e4:50:94:08", "-54.0"},
+                {"64:e5:99:90:fe:30", "-61.0"},
+                {"f8:32:e4:50:94:0c", "-69.0"},
+                {"00:26:66:94:95:0c", "-78.0"},
+                {"88:36:6c:24:09:a0", "-80.0"},
+                {"02:07:88:e9:db:da", "-83.0"},
+                {"00:08:52:2d:bb:c6", "-85.0"},
+                {"06:07:88:e9:db:da", "-85.0"},
+                {"88:36:6c:b0:eb:b0", "-85.0"}});
     }
 
     @Override
@@ -87,7 +100,7 @@ public class MainActivity extends AppCompatActivity {
         int delay = SensorManager.SENSOR_DELAY_UI;
         sensorManager = (SensorManager) getSystemService(Context.SENSOR_SERVICE);
         sensorManager.registerListener(mSensorListener, sensorManager.getDefaultSensor(Sensor.TYPE_MAGNETIC_FIELD), delay);
-        sensorManager.registerListener(mSensorListener, sensorManager.getDefaultSensor(Sensor.TYPE_GYROSCOPE), delay);
+        sensorManager.registerListener(mSensorListener, sensorManager.getDefaultSensor(Sensor.TYPE_ACCELEROMETER), delay);
     }
 
 
@@ -101,6 +114,8 @@ public class MainActivity extends AppCompatActivity {
 
             switch (event.sensor.getType()) {
                 case Sensor.TYPE_MAGNETIC_FIELD:
+                    mag_data = event.values.clone();
+
                     magX.setText("" + v[0]);
                     magY.setText("" + v[1]);
                     magZ.setText("" + v[2]);
@@ -111,20 +126,21 @@ public class MainActivity extends AppCompatActivity {
 //                            magClass[Integer.parseInt(angle.getText().toString()) + 180].addValue(v[0], v[1], v[2]);
                     }
                     break;
-                case Sensor.TYPE_GYROSCOPE:
-
-                    if (prevTime != 0) {
-                        float dt = (float) (event.timestamp - prevTime) * NS2S;
-                        double temp = v[2] * dt;
-
-                        if (Math.abs(Math.toDegrees(temp)) < 7d && Math.abs(Math.toDegrees(temp)) > 1d)
-                            prevAngle += temp;
-
-                    }
-                    angle.setText("" + (int) Math.toDegrees(prevAngle));
-                    prevTime = event.timestamp;
+                case Sensor.TYPE_ACCELEROMETER:
+                    acc_data = event.values.clone();
                     break;
+            }
 
+            if (mag_data != null && acc_data != null) {
+                SensorManager.getRotationMatrix(rota, null, acc_data, mag_data);
+                SensorManager.getOrientation(rota, result_data);
+                result_data[0] = (float) Math.toDegrees(result_data[0]);
+                result_data[1] = (float) Math.toDegrees(result_data[1]);
+                result_data[2] = (float) Math.toDegrees(result_data[2]);
+                if (result_data[0] < 0)
+                    result_data[0] += 360;
+
+                angle.setText(result_data[0] + " " + result_data[1] + " " + result_data[2]);
             }
         }
 
@@ -175,7 +191,7 @@ public class MainActivity extends AppCompatActivity {
                 z = Double.parseDouble(magZ.getText().toString());
                 t = Math.sqrt(x * x + y * y + z * z);
 
-                String sql = "INSERT INTO mValue(magX, magY, magZ, magT, blockNum) VALUES (" + magX.getText().toString() + ", " + magY.getText().toString() + ", " + magZ.getText().toString() + ", " + String.valueOf(t) + ", "+bCount.getText().toString()+");";
+                String sql = "INSERT INTO mValue(magX, magY, magZ, magT, blockNum) VALUES (" + magX.getText().toString() + ", " + magY.getText().toString() + ", " + magZ.getText().toString() + ", " + String.valueOf(t) + ", " + bCount.getText().toString() + ");";
                 db.execSQL(sql);
 
 
@@ -187,7 +203,7 @@ public class MainActivity extends AppCompatActivity {
                 int i;
                 for (i = 0; i < 9; i++) {
                     if (50 + 38 * i <= temp.length()) {
-                        sql = "INSERT INTO wValue(macId, wifi, blockNum) VALUES ('" + temp.substring(22 + 38 * i, 39 + 38 * i) + "', " + temp.substring(47 + 38 * i, 50 + 38 * i) + ", "+String.valueOf(blockCnt) +");";
+                        sql = "INSERT INTO wValue(macId, wifi, blockNum) VALUES ('" + temp.substring(22 + 38 * i, 39 + 38 * i) + "', " + temp.substring(47 + 38 * i, 50 + 38 * i) + ", " + String.valueOf(blockCnt) + ");";
                         db.execSQL(sql);
                         Log.i("sqlQuery", temp.substring(22 + (38 * i), 39 + (38 * i)) + " " + temp.substring(47 + (38 * i), 50 + (38 * i)));
                     } else
@@ -195,7 +211,7 @@ public class MainActivity extends AppCompatActivity {
                 }
                 if (i == 9) {
                     if (50 + 38 * i <= temp.length()) {
-                        sql = "INSERT INTO wValue(macId, wifi, blockNum) VALUES ('" + temp.substring(365, 382) + "', " + temp.substring(390, 393) +", "+ String.valueOf(blockCnt)+");";
+                        sql = "INSERT INTO wValue(macId, wifi, blockNum) VALUES ('" + temp.substring(365, 382) + "', " + temp.substring(390, 393) + ", " + String.valueOf(blockCnt) + ");";
                         db.execSQL(sql);
                         Log.i("sqlQuery", temp.substring(365, 382) + " " + temp.substring(390, 393));
                     }
@@ -216,6 +232,7 @@ public class MainActivity extends AppCompatActivity {
                 wifi.setText("Start");
                 measureTask.execute("measure");
 
+                Log.i("asdasdasd", ""+wifiresult);
 
                 break;
             case R.id.btnMsave:
