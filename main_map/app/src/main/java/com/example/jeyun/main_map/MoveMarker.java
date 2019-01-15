@@ -1,6 +1,4 @@
-// move marker
-
-package com.example.jeyun.garam_main;
+package com.example.jeyun.main_map;
 
 import android.content.Context;
 import android.graphics.Bitmap;
@@ -9,7 +7,7 @@ import android.util.DisplayMetrics;
 import android.util.Log;
 import android.view.MotionEvent;
 
-public class MovingUnit {
+public class MoveMarker {
 
     private float X;
     private float Y;
@@ -28,14 +26,13 @@ public class MovingUnit {
     private float offsetX;
     private float offsetY;
 
-    // 드래그시 좌표 저장
+    // 드래그
     int posX1 = 0, posX2 = 0, posY1 = 0, posY2 = 0;
 
-    // 핀치시 두좌표간의 거리 저장
     float oldDist = 1f;
     float newDist = 1f;
 
-    // 드래그 모드인지 핀치줌 모드인지 구분
+    // 드래그/ 핀치줌 모드 구분
     static final int NONE = 0;
     static final int DRAG = 1;
     static final int ZOOM = 2;
@@ -53,15 +50,9 @@ public class MovingUnit {
 
     private float step_interval = (float) 0.15; //0.9에서 수정
 
-    // 초기 위치에서 변화
-    public static void setInitialPos(int x, int y)
-    {
-        positionX = 31 + x*2;
-        positionY = 98 - y*2;
-    }
 
     //Image를 인자로 받는다.
-    public MovingUnit(Bitmap Image, Bitmap Image2, Context context) {
+    public MoveMarker(Bitmap Image, Bitmap Image2, Context context) {
         // TODO Auto-generated constructor stub
         this.context = context;
         this.Image = Image;
@@ -173,8 +164,6 @@ public class MovingUnit {
     }
 
     public void setSize(float Height, float Width) {
-        //this.Height=Height*((float) 1.75);
-        //this.Width=Width*((float) 1.75);
         this.Height = Height;
         this.Width = Width;
     }
@@ -225,4 +214,5 @@ public class MovingUnit {
     }
 
 }
+
 
