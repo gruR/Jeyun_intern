@@ -15,8 +15,8 @@ public class MoveMarker {
     public static float MarkerY = 0;
 
     // 0,0 좌표
-    public static float positionX = 31;
-    public static float positionY = 98;
+    public static double positionX = 26.7;
+    public static double positionY = 97.5;
     int MAX_PIXEL_WIDTH = 500;
     int MAX_PIXEL_HEIGHT = 1000;
     private float Width;
@@ -51,6 +51,52 @@ public class MoveMarker {
     private float step_interval = (float) 0.15; //0.9에서 수정
 
 
+    public void mapping(){
+
+        double[] arrX = {31, 30, 29, 28.5, 27.5, 26.7, 1.5};
+        double[] arrY = new double[127];
+        arrY[0]= 98;
+        for(int i=1; i<126; i++){
+            arrY[i] = arrY[i-1]-0.76;
+        }
+        arrM[] ma = new arrM[767];
+
+        for(int n=0;n<ma.length;n++){
+            ma[n] = new arrM();
+            ma[n].block_num = n;
+        }
+
+        int p=0;
+        for(int j=0;j<127;j++)
+        {
+            if(j%2==0){
+                for(int k=0;k<6;k++){
+                    ma[p].bX = arrX[k];
+                    ma[p].bY = arrY[j];
+                    p++;
+                }
+            }
+            if(j%2!=0) {
+                for (int k = 5; k >= 0; k--) {
+                    ma[p].bX = arrX[k];
+                    ma[p].bY = arrY[j];
+                    p++;
+                }
+            }
+        }
+    }
+
+    class arrM{
+        int block_num;
+        double bX;
+        double bY;
+
+        public arrM(){
+
+        }
+
+    }
+
     //Image를 인자로 받는다.
     public MoveMarker(Bitmap Image, Bitmap Image2, Context context) {
         // TODO Auto-generated constructor stub
@@ -64,6 +110,8 @@ public class MoveMarker {
         //마커의 현재 위치 : positionX, positionY, 엑셀 값 참조해서 할 것. (0, 0)위치 = 31, 98 // 마커가 위로 == y--, 마커가 왼쪽으로 = x--;
 
         setXY(0, 0);
+
+        mapping();
     }
 
     public void TouchProcess(MotionEvent event) {
