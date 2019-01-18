@@ -12,7 +12,7 @@ import java.util.Iterator;
 public class CalClass {
     private HashMap<Integer, Double> DBvalue = new HashMap<>();
     ArrayList<String[]> wifi = new ArrayList<>();   // block - macid - rss
-
+    private static CalClass myObject = null;
     SQLiteDatabase db;
 
     public CalClass(Context context) {
@@ -20,6 +20,12 @@ public class CalClass {
         db = dbHelper.getReadableDatabase();
 
         readDB();
+
+        myObject = this;
+    }
+
+    public static CalClass getCalObject(){
+        return myObject;
     }
 
     public void readDB() {
@@ -47,7 +53,7 @@ public class CalClass {
         result.close();
     }
 
-    public int calMag(int input) {
+    public int calMag(double input) {
         HashMap<Integer, Double> hashtemp = new HashMap<>();
 
         Log.i("Calclass+DBsize", DBvalue.size() + "");
@@ -139,4 +145,6 @@ public class CalClass {
 
         return (int) maxIndex;
     }
+
+
 }

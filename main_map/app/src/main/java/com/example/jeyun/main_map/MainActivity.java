@@ -43,12 +43,13 @@ public class MainActivity extends AppCompatActivity {
     int direction_frombt = 0; // 0 : UP, 1 : RIGHT, 2 : DOWN, 3 : LEFT
     Activity thisActivity = this;
 
-    CalClass calClass;
+    public CalClass calClass;
     SensorManager sensorManager;
     float[] rota = new float[9];
-    float[] result_data = new float[3];
-    float[] mag_data = new float[3];
-    float[] acc_data = new float[3];
+    public float[] result_data = new float[3];
+    public float[] mag_data = new float[3];
+    public float[] acc_data = new float[3];
+    public static Context context;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -82,6 +83,8 @@ public class MainActivity extends AppCompatActivity {
         } catch (Exception e) {
             e.printStackTrace();
         }
+
+        context = this;
     }
 
     private BroadcastReceiver WifiScanReceiver = new BroadcastReceiver() {
