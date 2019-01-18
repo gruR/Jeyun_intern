@@ -47,7 +47,7 @@ public class CalClass {
         result.close();
     }
 
-    public int calMag(double input) {
+    public int calMag(int input) {
         HashMap<Integer, Double> hashtemp = new HashMap<>();
 
         Log.i("Calclass+DBsize", DBvalue.size() + "");

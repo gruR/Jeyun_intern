@@ -50,53 +50,6 @@ public class MoveMarker {
 
     private float step_interval = (float) 0.15; //0.9에서 수정
 
-
-    public void mapping(){
-
-        double[] arrX = {31, 30, 29, 28.5, 27.5, 26.7, 1.5};
-        double[] arrY = new double[127];
-        arrY[0]= 98;
-        for(int i=1; i<126; i++){
-            arrY[i] = arrY[i-1]-0.76;
-        }
-        arrM[] ma = new arrM[767];
-
-        for(int n=0;n<ma.length;n++){
-            ma[n] = new arrM();
-            ma[n].block_num = n;
-        }
-
-        int p=0;
-        for(int j=0;j<127;j++)
-        {
-            if(j%2==0){
-                for(int k=0;k<6;k++){
-                    ma[p].bX = arrX[k];
-                    ma[p].bY = arrY[j];
-                    p++;
-                }
-            }
-            if(j%2!=0) {
-                for (int k = 5; k >= 0; k--) {
-                    ma[p].bX = arrX[k];
-                    ma[p].bY = arrY[j];
-                    p++;
-                }
-            }
-        }
-    }
-
-    class arrM{
-        int block_num;
-        double bX;
-        double bY;
-
-        public arrM(){
-
-        }
-
-    }
-
     //Image를 인자로 받는다.
     public MoveMarker(Bitmap Image, Bitmap Image2, Context context) {
         // TODO Auto-generated constructor stub
@@ -111,7 +64,6 @@ public class MoveMarker {
 
         setXY(0, 0);
 
-        mapping();
     }
 
     public void TouchProcess(MotionEvent event) {
@@ -241,7 +193,8 @@ public class MoveMarker {
         return 20*tempscale;
     }
 
-    public int[] getPosition(int x, int y) {
+    //전환
+    public int[] getPosition(double x, double y) {
         return new int[] { (int) ( X + ((Width / MAX_PIXEL_WIDTH*10) * (positionX + (x*2)) + Width / MAX_PIXEL_WIDTH*5)),
                 (int) ( Y + (( (Height / MAX_PIXEL_HEIGHT*10 * (positionY - y*2))) + Height / MAX_PIXEL_HEIGHT*5)) };
     }
