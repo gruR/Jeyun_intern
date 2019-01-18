@@ -56,7 +56,7 @@ public class MoveMarker {
         double[] arrX = {31, 30, 29, 28.5, 27.5, 26.7, 1.5};
         double[] arrY = new double[127];
         arrY[0]= 98;
-        for(int i=1; i<128; i++){
+        for(int i=1; i<126; i++){
             arrY[i] = arrY[i-1]-0.76;
         }
         arrM[] ma = new arrM[767];
@@ -67,7 +67,7 @@ public class MoveMarker {
         }
 
         int p=0;
-        for(int j=0;j<128;j++)
+        for(int j=0;j<127;j++)
         {
             if(j%2==0){
                 for(int k=0;k<6;k++){
