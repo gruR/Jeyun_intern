@@ -141,7 +141,7 @@ public class MoveObject extends View {
         double sum;
 
         sum = (((MainActivity)MainActivity.context).mag_data[0] + ((MainActivity)MainActivity.context).mag_data[1] + ((MainActivity)MainActivity.context).mag_data[2]);
-        
+
         for (int i = 0; i < 676; i++) {
             //System.out.println("radius:" + MU.getRadius() + ", drawCircle : " + i + ": x,y: " + expectedCircle.get(i)[0] + ", " + expectedCircle.get(i)[1]);
 
