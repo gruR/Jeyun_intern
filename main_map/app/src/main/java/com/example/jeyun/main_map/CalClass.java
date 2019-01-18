@@ -26,21 +26,24 @@ public class CalClass {
         String sql = "SELECT * FROM mValue;";
         Cursor result = db.rawQuery(sql, null);
 
-        while (!result.isLast()) {
-            result.moveToNext();
-            DBvalue.put(result.getInt(5), result.getDouble(4)); // block num, magT
+        if (result.isFirst() != result.isLast()) {   // DB 비었을때 체크
+            while (!result.isLast()) {
+                result.moveToNext();
+                DBvalue.put(result.getInt(5), result.getDouble(4)); // block num, magT
+            }
         }
 
 
         sql = "SELECT * FROM wValue;";
         result = db.rawQuery(sql, null);
 
-        while (!result.isLast()) {
-            result.moveToNext();
+        if (result.isFirst() != result.isLast()) {   // DB 비었을때 체크
+            while (!result.isLast()) {
+                result.moveToNext();
 
-            wifi.add(new String[]{result.getString(3), result.getString(1), result.getString(2)});
+                wifi.add(new String[]{result.getString(3), result.getString(1), result.getString(2)});
+            }
         }
-
         result.close();
     }
 

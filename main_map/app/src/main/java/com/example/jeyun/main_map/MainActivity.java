@@ -15,6 +15,7 @@ import android.hardware.SensorEventListener;
 import android.hardware.SensorManager;
 import android.net.wifi.ScanResult;
 import android.net.wifi.WifiManager;
+import android.os.AsyncTask;
 import android.os.Build;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
@@ -75,7 +76,12 @@ public class MainActivity extends AppCompatActivity {
             wifiManager.startScan();
         }
 
-        calClass = new CalClass(this);
+        CustomTask openDB = new CustomTask();
+        try {
+            calClass = openDB.execute(this).get();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 
     private BroadcastReceiver WifiScanReceiver = new BroadcastReceiver() {
@@ -195,4 +201,11 @@ public class MainActivity extends AppCompatActivity {
         mapViewFragment.changeDirecton((4 - direction_frombt) * 90 + degree);
         direction_frombt = degree/90;
     }*/
+}
+
+class CustomTask extends AsyncTask<Context, Void, CalClass> {
+    @Override
+    protected CalClass doInBackground(Context... contexts) {
+        return new CalClass(contexts[0]);
+    }
 }
