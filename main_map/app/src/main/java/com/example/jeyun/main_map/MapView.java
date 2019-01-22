@@ -11,7 +11,6 @@ public class MapView extends Fragment {
     MoveObject moveMap;
 
     public MapView() {
-        // Required empty public constructor
     }
 
     @Override
