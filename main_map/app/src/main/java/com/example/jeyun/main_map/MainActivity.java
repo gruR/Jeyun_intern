@@ -28,6 +28,8 @@ public class MainActivity extends AppCompatActivity {
 
     WifiManager wifiManager;
     List<ScanResult> mScanResult;
+    MapView map;
+    StepCount step;
 
     //MODE
     public enum MODE_STATE {
@@ -53,6 +55,7 @@ public class MainActivity extends AppCompatActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         if (Build.VERSION.SDK_INT >= 23 && ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
@@ -62,6 +65,7 @@ public class MainActivity extends AppCompatActivity {
         in_mag_arr = new double[110];
         pos_arr = new int[3];
 
+        step = new StepCount(sensorManager, (MapView) getSupportFragmentManager().findFragmentById(R.id.fragMapView));
         mapViewFragment = (MapView) getSupportFragmentManager().findFragmentById(R.id.fragMapView);
 
         q_mag_x = new float[QSIZE];
@@ -114,6 +118,7 @@ public class MainActivity extends AppCompatActivity {
     protected void onPause() {
         super.onPause();
         unregisterReceiver(WifiScanReceiver);
+        step.onPause();
         sensorManager = (SensorManager) getSystemService(Context.SENSOR_SERVICE);
         sensorManager.unregisterListener(mSensorListener);
     }
@@ -125,11 +130,20 @@ public class MainActivity extends AppCompatActivity {
         filter.addAction(WifiManager.NETWORK_STATE_CHANGED_ACTION);
         registerReceiver(WifiScanReceiver, filter);
         wifiManager.startScan();
+        Sensor sensor = sensorManager.getDefaultSensor(Sensor.TYPE_MAGNETIC_FIELD);
 
         int delay = SensorManager.SENSOR_DELAY_UI;
         sensorManager = (SensorManager) getSystemService(Context.SENSOR_SERVICE);
         sensorManager.registerListener(mSensorListener, sensorManager.getDefaultSensor(Sensor.TYPE_MAGNETIC_FIELD), delay);
         sensorManager.registerListener(mSensorListener, sensorManager.getDefaultSensor(Sensor.TYPE_ACCELEROMETER), delay);
+
+        if (sensor != null) {
+            sensorManager.registerListener(this, sensor, SensorManager.SENSOR_DELAY_UI);
+        } else {
+            Toast.makeText(this, "Magnetic sensor not available!", Toast.LENGTH_LONG).show();
+        }
+
+        step.onResume();
     }
 
     SensorEventListener mSensorListener = new SensorEventListener() {
@@ -194,21 +208,11 @@ public class MainActivity extends AppCompatActivity {
     float[] q_mag_x; //초기값 측정용 moving average 구하기
     float[] q_mag_z;
 
-    public int getCurrentDirection() {
-        return direction_frombt;
-    }
 
-    /*입력한 각도로 마커의 방향을 변경한다
-    public void changeDirection(int degree) {
-        GShandler.clearTotalOmega();
-        mapViewFragment.changeDirecton((4 - direction_frombt) * 90 + degree);
-        direction_frombt = degree/90;
-    }*/
-}
-
-class CustomTask extends AsyncTask<Context, Void, CalClass> {
-    @Override
-    protected CalClass doInBackground(Context... contexts) {
-        return new CalClass(contexts[0]);
+    class CustomTask extends AsyncTask<Context, Void, CalClass> {
+        @Override
+        protected CalClass doInBackground(Context... contexts) {
+            return new CalClass(contexts[0]);
+        }
     }
 }

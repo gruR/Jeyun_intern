@@ -15,7 +15,7 @@ public class MoveMarker {
     public static float MarkerY = 0;
 
     // 0,0 좌표
-    public static double positionX = 26.7;
+    public static double positionX = 31;
     public static double positionY = 97.5;
     int MAX_PIXEL_WIDTH = 500;
     int MAX_PIXEL_HEIGHT = 1000;
