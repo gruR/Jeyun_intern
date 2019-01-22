@@ -24,47 +24,13 @@ public class MoveObject extends View {
     ArrayList<Integer[]> expectedCircle = new ArrayList<Integer[]>();
     Paint paint;
 
-    /*
-        public void mapping(){
-
-            double[] arrX = {31, 30, 29, 28.5, 27.5, 26.7, 1.5};
-            double[] arrY = new double[127];
-            arrY[0]= 98;
-            for(int i=1; i<126; i++){
-                arrY[i] = arrY[i-1]-0.76;
-            }
-            arrM[] ma = new arrM[767];
-
-            for(int n=0;n<ma.length;n++){
-                ma[n] = new arrM();
-                ma[n].block_num = n;
-            }
-
-            int p=0;
-            for(int j=0;j<127;j++)
-            {
-                if(j%2==0){
-                    for(int k=0;k<6;k++){
-                        ma[p].bX = arrX[k];
-                        ma[p].bY = arrY[j];
-                        p++;
-                    }
-                }
-                if(j%2!=0) {
-                    for (int k = 5; k >= 0; k--) {
-                        ma[p].bX = arrX[k];
-                        ma[p].bY = arrY[j];
-                        p++;
-                    }
-                }
-            }
-
-        }
-    */
+    // 좌표
     class arrM {
         int block_num;
         double bX;
         double bY;
+        int pointX;
+        int pointY;
 
         public arrM() {
 
@@ -107,13 +73,13 @@ public class MoveObject extends View {
         canvas.drawBitmap(MU.getImage(), null, MU.getRect(), null);
         canvas.drawBitmap(MU.getMyImage(), null, MU.getRect2(), null);
 
-        double[] arrX = {31, 30, 29, 28.5, 27.5, 26.7, 1.5};
-        double[] arrY = new double[127];
+        double[] arrX = {31, 30, 29, 28.5, 27.5, 26.7};
+        double[] arrY = new double[128];
         arrY[0] = 98;
-        for (int i = 1; i < 126; i++) {
+        for (int i = 1; i < 128; i++) {
             arrY[i] = arrY[i - 1] - 0.76;
         }
-        arrM[] ma = new arrM[767];
+        arrM[] ma = new arrM[768];
 
         for (int n = 0; n < ma.length; n++) {
             ma[n] = new arrM();
@@ -121,11 +87,14 @@ public class MoveObject extends View {
         }
 
         int p = 0;
-        for (int j = 0; j < 127; j++) {
+
+        for (int j = 0; j < 128; j++) {
             if (j % 2 == 0) {
                 for (int k = 0; k < 6; k++) {
                     ma[p].bX = arrX[k];
                     ma[p].bY = arrY[j];
+                    ma[p].pointX = k;
+                    ma[p].pointY = j;
                     p++;
                 }
             }
@@ -133,6 +102,8 @@ public class MoveObject extends View {
                 for (int k = 5; k >= 0; k--) {
                     ma[p].bX = arrX[k];
                     ma[p].bY = arrY[j];
+                    ma[p].pointX = k;
+                    ma[p].pointY = j;
                     p++;
                 }
             }
@@ -143,8 +114,6 @@ public class MoveObject extends View {
         sum = (((MainActivity)MainActivity.context).mag_data[0] + ((MainActivity)MainActivity.context).mag_data[1] + ((MainActivity)MainActivity.context).mag_data[2]);
 
         for (int i = 0; i < 676; i++) {
-            //System.out.println("radius:" + MU.getRadius() + ", drawCircle : " + i + ": x,y: " + expectedCircle.get(i)[0] + ", " + expectedCircle.get(i)[1]);
-
             //마커좌표찍기
             //canvas.drawCircle(MU.getPosition(expectedCircle.get(i)[0], expectedCircle.get(i)[1])[0],MU.getPosition(expectedCircle.get(i)[0], expectedCircle.get(i)[1])[1], MU.getRadius(), paint);
 
