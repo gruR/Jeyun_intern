@@ -21,6 +21,8 @@ import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.widget.TextView;
+import android.widget.Toast;
 
 import java.util.List;
 
@@ -30,7 +32,7 @@ public class MainActivity extends AppCompatActivity {
     List<ScanResult> mScanResult;
     MapView map;
     StepCount step;
-
+    TextView example;
     //MODE
     public enum MODE_STATE {
         Calculate, Calibration, Initialization, WaitingMove, DR
@@ -47,10 +49,12 @@ public class MainActivity extends AppCompatActivity {
 
     public CalClass calClass;
     SensorManager sensorManager;
+    Sensor stepDetect;
     float[] rota = new float[9];
     public float[] result_data = new float[3];
     public float[] mag_data = new float[3];
     public float[] acc_data = new float[3];
+    public int step_cnt=0;
     public static Context context;
 
     @Override
@@ -61,7 +65,7 @@ public class MainActivity extends AppCompatActivity {
         if (Build.VERSION.SDK_INT >= 23 && ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
             ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.ACCESS_COARSE_LOCATION}, 1001);
         }
-
+        example = (TextView)findViewById(R.id.textView_temp);
         in_mag_arr = new double[110];
         pos_arr = new int[3];
 
@@ -79,6 +83,7 @@ public class MainActivity extends AppCompatActivity {
             registerReceiver(WifiScanReceiver, filter);
             wifiManager.startScan();
         }
+
 
         CustomTask openDB = new CustomTask();
         try {
@@ -135,7 +140,7 @@ public class MainActivity extends AppCompatActivity {
         sensorManager = (SensorManager) getSystemService(Context.SENSOR_SERVICE);
         sensorManager.registerListener(mSensorListener, sensorManager.getDefaultSensor(Sensor.TYPE_MAGNETIC_FIELD), delay);
         sensorManager.registerListener(mSensorListener, sensorManager.getDefaultSensor(Sensor.TYPE_ACCELEROMETER), delay);
-
+        sensorManager.registerListener(mSensorListener, sensorManager.getDefaultSensor(Sensor.TYPE_STEP_DETECTOR), delay);
 //        step.onResume();
     }
 
@@ -153,6 +158,10 @@ public class MainActivity extends AppCompatActivity {
                     break;
                 case Sensor.TYPE_ACCELEROMETER:
                     acc_data = event.values.clone();
+                    break;
+                case Sensor.TYPE_STEP_DETECTOR:
+                    step_cnt += (int)event.values[0];
+                    example.setText(""+step_cnt);
                     break;
             }
 
