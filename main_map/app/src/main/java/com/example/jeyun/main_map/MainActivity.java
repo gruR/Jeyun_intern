@@ -24,6 +24,11 @@ import android.os.Bundle;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.kircherelectronics.fsensor.filter.BaseFilter;
+import com.kircherelectronics.fsensor.filter.averaging.LowPassFilter;
+
+import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 public class MainActivity extends AppCompatActivity {
@@ -44,18 +49,22 @@ public class MainActivity extends AppCompatActivity {
     double[] in_mag_arr;
 
     //Variable
-    int direction_frombt = 0; // 0 : UP, 1 : RIGHT, 2 : DOWN, 3 : LEFT
+    //int direction_frombt = 0; // 0 : UP, 1 : RIGHT, 2 : DOWN, 3 : LEFT
     Activity thisActivity = this;
 
     public CalClass calClass;
     SensorManager sensorManager;
-    Sensor stepDetect;
+    //Sensor stepDetect;
     float[] rota = new float[9];
     public float[] result_data = new float[3];
     public float[] mag_data = new float[3];
     public float[] acc_data = new float[3];
     public int step_cnt=0;
     public static Context context;
+    boolean activityRunning;
+    public int count;
+    int num;
+    int count_num;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -68,6 +77,9 @@ public class MainActivity extends AppCompatActivity {
         example = (TextView)findViewById(R.id.textView_temp);
         in_mag_arr = new double[110];
         pos_arr = new int[3];
+
+        num = 0;
+        count_num = 0;
 
         mapViewFragment = (MapView) getSupportFragmentManager().findFragmentById(R.id.fragMapView);
 
@@ -93,6 +105,8 @@ public class MainActivity extends AppCompatActivity {
         }
 
         context = this;
+        init();
+
     }
 
     private BroadcastReceiver WifiScanReceiver = new BroadcastReceiver() {
@@ -122,7 +136,9 @@ public class MainActivity extends AppCompatActivity {
     protected void onPause() {
         super.onPause();
         unregisterReceiver(WifiScanReceiver);
-        step.onPause();
+        //step.onPause();
+        activityRunning = false;
+
         sensorManager = (SensorManager) getSystemService(Context.SENSOR_SERVICE);
         sensorManager.unregisterListener(mSensorListener);
     }
@@ -130,6 +146,8 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onResume() {
         super.onResume();
+        activityRunning = true;
+
         final IntentFilter filter = new IntentFilter(WifiManager.SCAN_RESULTS_AVAILABLE_ACTION);
         filter.addAction(WifiManager.NETWORK_STATE_CHANGED_ACTION);
         registerReceiver(WifiScanReceiver, filter);
@@ -144,13 +162,57 @@ public class MainActivity extends AppCompatActivity {
 //        step.onResume();
     }
 
+    double previousTime = 0;
+    double previousRunningTime = 0;
+
+    double RunningThreshold;
+    private float currentThreshold;
+
+    ArrayList<Double> Acclist;
+    ArrayList<Double> RunningAcc;
+
+    private boolean isStateRunning;
+
     SensorEventListener mSensorListener = new SensorEventListener() {
         @Override
         public void onSensorChanged(SensorEvent event) {
+            double accelerometerValue = getSensorValue(event);
+            double timestamp = getTimestamp(event);
+
             if (event.accuracy == SensorManager.SENSOR_STATUS_UNRELIABLE)
                 return;
 
             float[] v = event.values;
+
+            if (isStateRunning == false) {
+                if (previousRunningTime == 0) {
+                    previousRunningTime = timestamp;
+                }
+                if (timestamp - previousRunningTime < 1000) // obtain acc during 1 second
+                {
+                    RunningAcc.add(accelerometerValue);
+                } else {
+                    double variance = Math.pow(calculateSD(RunningAcc), 2); // calculate variance
+
+                    previousRunningTime = 0;
+                    RunningAcc.clear();
+
+                    if (variance >= RunningThreshold) {
+                        isStateRunning = true;
+                    }
+                }
+            } else {
+                if (accelerometerValue < 1.3f) {
+                    Acclist.add(accelerometerValue);
+                    if (activityRunning && (Acclist.get(1) > currentThreshold) && (timestamp - previousTime) > 500
+                            && (Acclist.get(1) > max(Acclist.get(0), Acclist.get(2)))) {
+                        count=++count_num;
+                        previousTime = timestamp;
+                    }
+
+                    Acclist.remove(0);
+                }
+            }
 
             switch (event.sensor.getType()) {
                 case Sensor.TYPE_MAGNETIC_FIELD:
@@ -158,11 +220,10 @@ public class MainActivity extends AppCompatActivity {
                     break;
                 case Sensor.TYPE_ACCELEROMETER:
                     acc_data = event.values.clone();
+                    example.setText(""+count);
+
                     break;
-                case Sensor.TYPE_STEP_DETECTOR:
-                    step_cnt += (int)event.values[0];
-                    example.setText(""+step_cnt);
-                    break;
+
             }
 
             if (mag_data != null && acc_data != null) {
@@ -175,6 +236,8 @@ public class MainActivity extends AppCompatActivity {
                 if (result_data[0] < 0) // 현재 폰이 보고있는 방향
                     result_data[0] += 360;
             }
+
+
         }
 
         @Override
@@ -210,6 +273,64 @@ public class MainActivity extends AppCompatActivity {
     float[] q_mag_x; //초기값 측정용 moving average 구하기
     float[] q_mag_z;
 
+    public double max(double v1, double v2) {
+        if (v1 < v2) return v2;
+        else return v1;
+    }
+
+
+    private long getTimestamp(SensorEvent event) {
+        return (new Date()).getTime() + (event.timestamp - System.nanoTime()) / 1000000L;
+    }
+
+    private float[] acceleration;
+    private float[] filteredAcceleration;
+    private BaseFilter filter;
+
+    private Double getSensorValue(SensorEvent event) {
+        acceleration = new float[3];
+        filteredAcceleration = new float[3];
+
+        System.arraycopy(event.values, 0, acceleration, 0, event.values.length);
+        filteredAcceleration = filter.filter(acceleration);
+
+        return Math.sqrt(filteredAcceleration[0] * filteredAcceleration[0] +
+                filteredAcceleration[1] * filteredAcceleration[1] +
+                filteredAcceleration[2] * filteredAcceleration[2]) - 9.8f;
+    }
+
+    private void init() {
+
+        Acclist = new ArrayList<Double>();
+        Acclist.add(0.4);
+        Acclist.add(0.4);
+        currentThreshold = 0.45f;
+
+        RunningThreshold = 0.01;
+        RunningAcc = new ArrayList<Double>();
+        isStateRunning = false;
+
+        //LPF
+        filter = new LowPassFilter(); // LowPassFilter(), MeanFilter(), MedianFilter();
+        filter.setTimeConstant(0.18f);
+        //LPF
+    }
+
+    public double calculateSD(ArrayList<Double> numArray) {
+        double sum = 0.0, standardDeviation = 0.0;
+
+        for (double num : numArray) {
+            sum += num;
+        }
+
+        double mean = sum / numArray.size();
+
+        for (double num : numArray) {
+            standardDeviation += Math.pow(num - mean, 2);
+        }
+
+        return Math.sqrt(standardDeviation / numArray.size());
+    }
 
     class CustomTask extends AsyncTask<Context, Void, CalClass> {
         @Override
