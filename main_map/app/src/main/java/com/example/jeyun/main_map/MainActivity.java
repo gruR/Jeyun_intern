@@ -17,6 +17,8 @@ import android.net.wifi.ScanResult;
 import android.net.wifi.WifiManager;
 import android.os.AsyncTask;
 import android.os.Build;
+import android.os.Handler;
+import android.os.Message;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
@@ -36,7 +38,6 @@ public class MainActivity extends AppCompatActivity {
     WifiManager wifiManager;
     List<ScanResult> mScanResult;
     MapView map;
-    StepCount step;
     TextView example;
     //MODE
     public enum MODE_STATE {
@@ -161,6 +162,36 @@ public class MainActivity extends AppCompatActivity {
         sensorManager.registerListener(mSensorListener, sensorManager.getDefaultSensor(Sensor.TYPE_STEP_DETECTOR), delay);
 //        step.onResume();
     }
+    Handler handler = new Handler() {
+        @Override
+        public void handleMessage(Message msg)
+        {
+            updateThread();
+        }
+    };
+    private void updateThread()
+    {
+        num++;
+    }
+    @Override
+    protected void onStart(){
+        super.onStart();
+        Thread myThread = new Thread(new Runnable() {
+            @Override
+            public void run() {
+                while (true){
+                    try{
+                        handler.sendMessage(handler.obtainMessage());
+                        Thread.sleep(1000);
+                    }catch (Throwable t){
+
+                    }
+                }
+            }
+        });
+        myThread.start();
+    }
+
 
     double previousTime = 0;
     double previousRunningTime = 0;
@@ -176,43 +207,10 @@ public class MainActivity extends AppCompatActivity {
     SensorEventListener mSensorListener = new SensorEventListener() {
         @Override
         public void onSensorChanged(SensorEvent event) {
-            double accelerometerValue = getSensorValue(event);
+            double accelerometerValue;
             double timestamp = getTimestamp(event);
 
-            if (event.accuracy == SensorManager.SENSOR_STATUS_UNRELIABLE)
-                return;
 
-            float[] v = event.values;
-
-            if (isStateRunning == false) {
-                if (previousRunningTime == 0) {
-                    previousRunningTime = timestamp;
-                }
-                if (timestamp - previousRunningTime < 1000) // obtain acc during 1 second
-                {
-                    RunningAcc.add(accelerometerValue);
-                } else {
-                    double variance = Math.pow(calculateSD(RunningAcc), 2); // calculate variance
-
-                    previousRunningTime = 0;
-                    RunningAcc.clear();
-
-                    if (variance >= RunningThreshold) {
-                        isStateRunning = true;
-                    }
-                }
-            } else {
-                if (accelerometerValue < 1.3f) {
-                    Acclist.add(accelerometerValue);
-                    if (activityRunning && (Acclist.get(1) > currentThreshold) && (timestamp - previousTime) > 500
-                            && (Acclist.get(1) > max(Acclist.get(0), Acclist.get(2)))) {
-                        count=++count_num;
-                        previousTime = timestamp;
-                    }
-
-                    Acclist.remove(0);
-                }
-            }
 
             switch (event.sensor.getType()) {
                 case Sensor.TYPE_MAGNETIC_FIELD:
@@ -220,10 +218,42 @@ public class MainActivity extends AppCompatActivity {
                     break;
                 case Sensor.TYPE_ACCELEROMETER:
                     acc_data = event.values.clone();
-                    example.setText(""+count);
+                    accelerometerValue = getSensorValue(event);
+                    if (event.accuracy == SensorManager.SENSOR_STATUS_UNRELIABLE)
+                        return;
 
+                    float[] v = event.values;
+
+                    if (isStateRunning == false) {
+                        if (previousRunningTime == 0) {
+                            previousRunningTime = timestamp;
+                        }
+                        if (timestamp - previousRunningTime < 1000) // obtain acc during 1 second
+                        {
+                            RunningAcc.add(accelerometerValue);
+                        } else {
+                            double variance = Math.pow(calculateSD(RunningAcc), 2); // calculate variance
+
+                            previousRunningTime = 0;
+                            RunningAcc.clear();
+
+                            if (variance >= RunningThreshold) {
+                                isStateRunning = true;
+                            }
+                        }
+                    } else {
+                        if (accelerometerValue < 1.3f) {
+                            Acclist.add(accelerometerValue);
+                            if (activityRunning && (Acclist.get(1) > currentThreshold) && (timestamp - previousTime) > 500
+                                    && (Acclist.get(1) > max(Acclist.get(0), Acclist.get(2)))) {
+                               example.setText(String.valueOf(++count_num));
+                                previousTime = timestamp;
+                            }
+
+                            Acclist.remove(0);
+                        }
+                    }
                     break;
-
             }
 
             if (mag_data != null && acc_data != null) {
