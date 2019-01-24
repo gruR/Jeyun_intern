@@ -39,6 +39,7 @@ public class MainActivity extends AppCompatActivity {
     WifiReciver reciver;
     List<ScanResult> ScanResult;
     MagClass magClass[] = new MagClass[361];
+
     SensorManager sensorManager;
 
     int blockCnt = 0;

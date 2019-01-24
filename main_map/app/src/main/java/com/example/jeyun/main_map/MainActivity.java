@@ -23,6 +23,7 @@ import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.util.Log;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -43,9 +44,8 @@ public class MainActivity extends AppCompatActivity {
     public enum MODE_STATE {
         Calculate, Calibration, Initialization, WaitingMove, DR
     }
-
     MapView mapViewFragment;
-
+    int wbnum = -1;
     int[] pos_arr;
     double[] in_mag_arr;
 
@@ -118,6 +118,16 @@ public class MainActivity extends AppCompatActivity {
             if (action != null) {
                 if (action.equals(WifiManager.SCAN_RESULTS_AVAILABLE_ACTION)) {
                     mScanResult = wifiManager.getScanResults();
+                    if(mScanResult!=null){
+                        String[][] InputResult = new String[mScanResult.size()][2];
+                        for(int i =0; i<mScanResult.size();i++)
+                        {
+                            InputResult[i][0]=mScanResult.get(i).BSSID;
+                            InputResult[i][1]=Integer.toString(mScanResult.get(i).level);
+                        }
+                        wbnum=calClass.calWifi(InputResult);
+                    }
+                    example.setText(""+wbnum);
                     wifiManager.startScan();
                 } else if (action.equals(WifiManager.NETWORK_STATE_CHANGED_ACTION)) {
                     context.sendBroadcast(new Intent("wifi.ON_NETWORK_STATE_CHANGED"));
@@ -216,15 +226,10 @@ public class MainActivity extends AppCompatActivity {
             switch (event.sensor.getType()) {
                 case Sensor.TYPE_MAGNETIC_FIELD:
                     mag_data = event.values.clone();
-                    if(mag_data==null)
-                        example.setText("Empty");
-                    else
-                    {
-                        double t;
-                        t = Math.sqrt(mag_data[0] * mag_data[0] + mag_data[1] * mag_data[1] + mag_data[2] * mag_data[2]);
-                        bnum=calClass.calMag(t);
-                        example.setText(""+bnum);
-                    }
+                    double t= Math.sqrt(mag_data[0] * mag_data[0] + mag_data[1] * mag_data[1] + mag_data[2] * mag_data[2]);
+
+                    bnum=calClass.calMag(t);
+
                     break;
                 case Sensor.TYPE_ACCELEROMETER:
                     acc_data = event.values.clone();
