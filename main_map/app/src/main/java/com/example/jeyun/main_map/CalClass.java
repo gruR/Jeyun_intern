@@ -32,24 +32,25 @@ public class CalClass {
         String sql = "SELECT * FROM mValue;";
         Cursor result = db.rawQuery(sql, null);
 
-        if (result.isFirst() != result.isLast()) {   // DB 비었을때 체크
+        //if (result.isFirst() != result.isLast()) {   // DB 비었을때 체크
             while (!result.isLast()) {
                 result.moveToNext();
                 DBvalue.put(result.getInt(5), result.getDouble(4)); // block num, magT
+                Log.i("DBmagnetic", result.getInt(5)+ " " +result.getDouble(4));
             }
-        }
+        //}
 
 
         sql = "SELECT * FROM wValue;";
         result = db.rawQuery(sql, null);
 
-        if (result.isFirst() != result.isLast()) {   // DB 비었을때 체크
+      //  if (result.isFirst() != result.isLast()) {   // DB 비었을때 체크
             while (!result.isLast()) {
                 result.moveToNext();
-
                 wifi.add(new String[]{result.getString(3), result.getString(1), result.getString(2)});
+                Log.i("DBwifi", result.getString(3)+ " "+ result.getString(1) + result.getString(2));
             }
-        }
+        //}
         result.close();
     }
 
