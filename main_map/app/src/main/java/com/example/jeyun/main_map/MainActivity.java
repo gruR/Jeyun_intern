@@ -66,6 +66,7 @@ public class MainActivity extends AppCompatActivity {
     public int count;
     int num;
     int count_num;
+    int bnum;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -215,6 +216,15 @@ public class MainActivity extends AppCompatActivity {
             switch (event.sensor.getType()) {
                 case Sensor.TYPE_MAGNETIC_FIELD:
                     mag_data = event.values.clone();
+                    if(mag_data==null)
+                        example.setText("Empty");
+                    else
+                    {
+                        double t;
+                        t = Math.sqrt(mag_data[0] * mag_data[0] + mag_data[1] * mag_data[1] + mag_data[2] * mag_data[2]);
+                        bnum=calClass.calMag(t);
+                        example.setText(""+bnum);
+                    }
                     break;
                 case Sensor.TYPE_ACCELEROMETER:
                     acc_data = event.values.clone();
@@ -246,7 +256,7 @@ public class MainActivity extends AppCompatActivity {
                             Acclist.add(accelerometerValue);
                             if (activityRunning && (Acclist.get(1) > currentThreshold) && (timestamp - previousTime) > 500
                                     && (Acclist.get(1) > max(Acclist.get(0), Acclist.get(2)))) {
-                               example.setText(String.valueOf(++count_num));
+                               //example.setText(String.valueOf(++count_num));
                                 previousTime = timestamp;
                             }
 
