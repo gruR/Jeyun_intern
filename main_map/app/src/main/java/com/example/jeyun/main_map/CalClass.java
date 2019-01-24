@@ -56,7 +56,7 @@ public class CalClass {
     public int calMag(double input) {
         HashMap<Integer, Double> hashtemp = new HashMap<>();
 
-        Log.i("Calclass+DBsize", DBvalue.size() + "");
+        Log.i("Calclass+DBsize", DBvalue.size() + " "+input);
         for (int i = 0; i < DBvalue.size(); i++) {
             double temp = DBvalue.get(i);
 
